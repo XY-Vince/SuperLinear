@@ -1,0 +1,4 @@
+interface:
+  display_name: "Whoami"
+  short_description: "Generate collaboration identity prompts."
+  default_prompt: "使用 $whoami 运行中文协作偏好问卷，并生成可审阅的协作身份提示词。"

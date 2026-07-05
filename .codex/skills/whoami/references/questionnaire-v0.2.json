@@ -1,0 +1,448 @@
+{
+  "questionnaire_id": "whoami-v0.2",
+  "title": "Whoami Collaboration Assessment",
+  "version": "0.2",
+  "instructions": "Choose one option per question. Pick the assistant behavior you would want most often, not the one that sounds ideal.",
+  "questions": [
+    {
+      "id": "q01",
+      "cluster": "execution",
+      "prompt": "You give an agent a clear coding task with no special constraints. What should it do first?",
+      "options": {
+        "a": {"label": "Ask a few clarifying questions before touching code.", "weights": {"clarification": 2, "autonomy": -1}},
+        "b": {"label": "Inspect the relevant files and make a narrow first patch.", "weights": {"autonomy": 2, "code_action": 2}},
+        "c": {"label": "Write a plan and wait for approval.", "weights": {"autonomy": -2, "planning_depth": 2}},
+        "d": {"label": "Prototype quickly, then refine after feedback.", "weights": {"speed": 2, "risk": 1, "verification": -1}}
+      }
+    },
+    {
+      "id": "q02",
+      "cluster": "execution",
+      "prompt": "The task is ambiguous but reversible. What should the agent do?",
+      "options": {
+        "a": {"label": "Stop and ask; ambiguity should be removed first.", "weights": {"clarification": 2, "autonomy": -1}},
+        "b": {"label": "State assumptions and proceed with a narrow first version.", "weights": {"autonomy": 2, "clarification": -1, "speed": 1}},
+        "c": {"label": "Pick the most likely interpretation and make the assumption explicit.", "weights": {"autonomy": 1, "fact_guess_plan": 1}},
+        "d": {"label": "Explore broadly before choosing a direction.", "weights": {"planning_depth": 2, "speed": -1}}
+      }
+    },
+    {
+      "id": "q03",
+      "cluster": "execution",
+      "prompt": "A first artifact is 80% useful but rough. Which default should change most by mode?",
+      "options": {
+        "a": {"label": "Code can ship rougher; public writing or decks should be polished first.", "weights": {"mode_separation": 3, "speed": 1, "taste": 1}},
+        "b": {"label": "Ship rough drafts quickly in most modes and iterate from feedback.", "weights": {"speed": 2, "risk": 1}},
+        "c": {"label": "Polish most artifacts until they can stand alone.", "weights": {"speed": -2, "verification": 1, "taste": 1}},
+        "d": {"label": "Ask me whether this artifact needs speed or polish.", "weights": {"clarification": 2, "autonomy": -1}}
+      }
+    },
+    {
+      "id": "q04",
+      "cluster": "execution",
+      "prompt": "The agent sees an unrelated cleanup opportunity while fixing a bug.",
+      "options": {
+        "a": {"label": "Do the cleanup in the same patch.", "weights": {"risk": 1, "speed": 1}},
+        "b": {"label": "Fix the bug first; mention cleanup separately.", "weights": {"verification": 2, "source_truth": 1}},
+        "c": {"label": "Ask whether cleanup should be included.", "weights": {"clarification": 1, "autonomy": -1}},
+        "d": {"label": "Refactor if it makes the system cleaner long-term.", "weights": {"risk": 2, "planning_depth": 1}}
+      }
+    },
+    {
+      "id": "q05",
+      "cluster": "execution",
+      "prompt": "A code change looks correct, but verification will cost extra time. Where should the agent usually stop?",
+      "options": {
+        "a": {"label": "Stop after compile/lint or diff review if the task is low-risk.", "weights": {"verification": -1, "speed": 2, "cost_time": -1}},
+        "b": {"label": "Run the cheapest meaningful test or smoke check.", "weights": {"verification": 2, "speed": 1, "cost_time": -1}},
+        "c": {"label": "Spend time adding or extending tests before calling it done.", "weights": {"verification": 3, "speed": -1, "cost_time": 2}},
+        "d": {"label": "Check the actual user path when behavior is externally visible.", "weights": {"verification": 2, "normal_path": 2, "cost_time": 1}}
+      }
+    },
+    {
+      "id": "q06",
+      "cluster": "execution",
+      "prompt": "How should an agent handle external/public actions?",
+      "options": {
+        "a": {"label": "Ask before any external action.", "weights": {"autonomy": -2, "privacy": 1}},
+        "b": {"label": "Proceed for low-risk public actions already requested; ask for irreversible or sensitive ones.", "weights": {"autonomy": 2, "privacy": 1}},
+        "c": {"label": "Draft everything locally and ask before publication.", "weights": {"privacy": 2, "autonomy": -1}},
+        "d": {"label": "Optimize for momentum unless money, secrets, or deletion are involved.", "weights": {"autonomy": 2, "speed": 1, "privacy": 1}}
+      }
+    },
+    {
+      "id": "q07",
+      "cluster": "communication",
+      "prompt": "For routine collaboration, what tone should the assistant default to?",
+      "options": {
+        "a": {"label": "Neutral and tool-like.", "weights": {"warmth": -2, "brevity": 1}},
+        "b": {"label": "Direct colleague: concise, factual, no performance.", "weights": {"directness": 1, "brevity": 1}},
+        "c": {"label": "Warm collaborator: still direct, but with more human framing.", "weights": {"warmth": 2, "directness": -1}},
+        "d": {"label": "Match the domain: neutral for code, warmer for writing or personal admin.", "weights": {"mode_separation": 2, "warmth": 1}}
+      }
+    },
+    {
+      "id": "q08",
+      "cluster": "communication",
+      "prompt": "The agent disagrees with your proposed approach. What should it do?",
+      "options": {
+        "a": {"label": "Follow my approach unless I ask for critique.", "weights": {"challenge": -2}},
+        "b": {"label": "Push back briefly and explain the concrete risk.", "weights": {"challenge": 2, "directness": 2}},
+        "c": {"label": "Present both approaches neutrally.", "weights": {"directness": -1, "structure": 1}},
+        "d": {"label": "Ask whether I want a critique before giving one.", "weights": {"clarification": 1, "challenge": -1}}
+      }
+    },
+    {
+      "id": "q09",
+      "cluster": "communication",
+      "prompt": "How direct should critique be?",
+      "options": {
+        "a": {"label": "Soft; avoid sounding blunt unless safety is involved.", "weights": {"directness": -2, "warmth": 1}},
+        "b": {"label": "Direct but specific; no unnecessary edge.", "weights": {"directness": 2, "challenge": 1}},
+        "c": {"label": "Very direct; I value speed and clarity over comfort.", "weights": {"directness": 3, "brevity": 1}},
+        "d": {"label": "Depends on the domain; direct for code, softer for writing.", "weights": {"mode_separation": 2, "directness": 1}}
+      }
+    },
+    {
+      "id": "q10",
+      "cluster": "communication",
+      "prompt": "During long work, what update cadence do you want?",
+      "options": {
+        "a": {"label": "Only final result unless blocked.", "weights": {"brevity": 2}},
+        "b": {"label": "Short progress notes when context changes or work takes time.", "weights": {"brevity": 1, "handoff": 1}},
+        "c": {"label": "Frequent detailed updates.", "weights": {"brevity": -2}},
+        "d": {"label": "Updates only at milestones: plan, edit, verify, ship.", "weights": {"structure": 2}}
+      }
+    },
+    {
+      "id": "q11",
+      "cluster": "communication",
+      "prompt": "What response shape usually helps you decide fastest?",
+      "options": {
+        "a": {"label": "Natural prose with enough context.", "weights": {"structure": -1, "brevity": -1}},
+        "b": {"label": "Bullets and checklists.", "weights": {"structure": 2}},
+        "c": {"label": "Tables comparing tradeoffs.", "weights": {"structure": 2, "evidence": 1}},
+        "d": {"label": "One recommendation, then a short rationale.", "weights": {"brevity": 2, "autonomy": 1}}
+      }
+    },
+    {
+      "id": "q12",
+      "cluster": "communication",
+      "prompt": "What annoys you most in assistant writing?",
+      "options": {
+        "a": {"label": "Too terse; I cannot see the reasoning.", "weights": {"brevity": -2, "evidence": 1}},
+        "b": {"label": "Too much background and generic explanation.", "weights": {"brevity": 2}},
+        "c": {"label": "No clear recommendation.", "weights": {"autonomy": 1, "structure": 1}},
+        "d": {"label": "Claims without evidence.", "weights": {"evidence": 2, "fact_guess_plan": 1}}
+      }
+    },
+    {
+      "id": "q13",
+      "cluster": "thinking",
+      "prompt": "A plausible but unverified claim could help the user move forward. What should the agent do?",
+      "options": {
+        "a": {"label": "Use it as a clearly marked hypothesis and keep momentum.", "weights": {"fact_guess_plan": 1, "evidence": -1, "speed": 1}},
+        "b": {"label": "Verify it before it appears in the answer.", "weights": {"evidence": 3, "verification": 1, "speed": -1}},
+        "c": {"label": "Omit it unless it changes the decision.", "weights": {"brevity": 1, "evidence": 1}},
+        "d": {"label": "Include confidence, basis, and the next check.", "weights": {"fact_guess_plan": 2, "evidence": 1, "verification": 1}}
+      }
+    },
+    {
+      "id": "q14",
+      "cluster": "thinking",
+      "prompt": "Before changing a system, what should the agent identify first?",
+      "options": {
+        "a": {"label": "The quickest implementation path.", "weights": {"speed": 2}},
+        "b": {"label": "The source of truth and current state.", "weights": {"source_truth": 2, "evidence": 1}},
+        "c": {"label": "The user's intent and preferred outcome.", "weights": {"clarification": 1}},
+        "d": {"label": "The highest-level architecture principle.", "weights": {"planning_depth": 2}}
+      }
+    },
+    {
+      "id": "q15",
+      "cluster": "thinking",
+      "prompt": "A workflow breaks after a restart or handoff. What should the agent inspect first?",
+      "options": {
+        "a": {"label": "The latest error or failing command.", "weights": {"handoff": -1, "speed": 1}},
+        "b": {"label": "What state moved: owner, session, memory, visibility.", "weights": {"handoff": 3, "source_truth": 1}},
+        "c": {"label": "The documented normal path before debugging state transfer.", "weights": {"source_truth": 2, "handoff": 1}},
+        "d": {"label": "Ask the previous owner for the intended handoff state.", "weights": {"clarification": 1, "handoff": 2}}
+      }
+    },
+    {
+      "id": "q16",
+      "cluster": "thinking",
+      "prompt": "You ask for research. What should count as adequate support?",
+      "options": {
+        "a": {"label": "Good synthesis from general knowledge.", "weights": {"evidence": -2}},
+        "b": {"label": "Primary sources or direct artifacts when claims matter.", "weights": {"evidence": 3}},
+        "c": {"label": "Recent web sources and clear citation links.", "weights": {"evidence": 2}},
+        "d": {"label": "A decision-focused memo with evidence levels.", "weights": {"evidence": 2, "fact_guess_plan": 2}}
+      }
+    },
+    {
+      "id": "q17",
+      "cluster": "thinking",
+      "prompt": "What language should the assistant use by default?",
+      "options": {
+        "a": {"label": "Follow the language I used in the latest message.", "weights": {"language_locale": 3}},
+        "b": {"label": "Use one default language unless I explicitly ask otherwise.", "weights": {"language_locale": -2}},
+        "c": {"label": "Use chat language for collaboration, but artifact language for docs, code, or public output.", "weights": {"language_locale": 2, "mode_separation": 2}},
+        "d": {"label": "Ask before switching language in durable docs or public output.", "weights": {"clarification": 1, "language_locale": 1}}
+      }
+    },
+    {
+      "id": "q18",
+      "cluster": "thinking",
+      "prompt": "The normal path fails, but a workaround works. What should the agent conclude?",
+      "options": {
+        "a": {"label": "Use the workaround and move on.", "weights": {"speed": 2, "normal_path": -2}},
+        "b": {"label": "Use the workaround, but log the default path as a separate follow-up.", "weights": {"normal_path": 2, "speed": 1, "proactivity": 1}},
+        "c": {"label": "Stop until the default path is understood or fixed.", "weights": {"normal_path": 3, "speed": -1, "cost_time": 1}},
+        "d": {"label": "Ask whether the workaround is acceptable.", "weights": {"clarification": 1}}
+      }
+    },
+    {
+      "id": "q19",
+      "cluster": "coding",
+      "prompt": "For code tasks, what default collaboration style do you want?",
+      "options": {
+        "a": {"label": "Explain the approach first, then wait.", "weights": {"code_action": -2, "autonomy": -1}},
+        "b": {"label": "Patch directly when scope is clear, then explain choices after.", "weights": {"code_action": 3, "autonomy": 2}},
+        "c": {"label": "Design architecture before implementation.", "weights": {"planning_depth": 2, "code_action": -1}},
+        "d": {"label": "Ask me to choose between implementation options.", "weights": {"clarification": 1, "autonomy": -1}}
+      }
+    },
+    {
+      "id": "q20",
+      "cluster": "coding",
+      "prompt": "A codebase has an existing pattern you dislike. What should the agent do?",
+      "options": {
+        "a": {"label": "Preserve local consistency even if the pattern is ugly.", "weights": {"risk": -1, "code_action": 1}},
+        "b": {"label": "Improve only the touched code if it reduces risk now.", "weights": {"risk": 1, "verification": 1}},
+        "c": {"label": "Open a separate refactor task or PR.", "weights": {"planning_depth": 2, "proactivity": 1}},
+        "d": {"label": "Ask first because system direction belongs to the owner.", "weights": {"clarification": 2, "autonomy": -1}}
+      }
+    },
+    {
+      "id": "q21",
+      "cluster": "coding",
+      "prompt": "How much implementation detail should the final coding report include?",
+      "options": {
+        "a": {"label": "Just what changed and how to test it.", "weights": {"brevity": 2}},
+        "b": {"label": "Files changed, reasoning, verification, and residual risk.", "weights": {"structure": 2, "verification": 2}},
+        "c": {"label": "A tutorial-level explanation.", "weights": {"brevity": -2}},
+        "d": {"label": "Only commit/PR link unless something is risky.", "weights": {"brevity": 3}}
+      }
+    },
+    {
+      "id": "q22",
+      "cluster": "coding",
+      "prompt": "When tests are expensive or unavailable, what should the agent do?",
+      "options": {
+        "a": {"label": "Skip deeper checks and name the verification gap.", "weights": {"verification": -1, "speed": 1, "cost_time": -1}},
+        "b": {"label": "Run the cheapest meaningful smoke check.", "weights": {"verification": 2, "speed": 1, "cost_time": -1}},
+        "c": {"label": "Build a temporary test harness if it reduces uncertainty.", "weights": {"verification": 3, "risk": 1, "cost_time": 2}},
+        "d": {"label": "Ask whether the extra verification is worth the time.", "weights": {"clarification": 1, "cost_time": -1}}
+      }
+    },
+    {
+      "id": "q23",
+      "cluster": "writing",
+      "prompt": "When editing your writing, what should the assistant protect most?",
+      "options": {
+        "a": {"label": "Clarity for the audience, even if voice changes.", "weights": {"writing_voice": -2, "evidence": 1}},
+        "b": {"label": "My voice and point of view.", "weights": {"writing_voice": 3}},
+        "c": {"label": "Argument structure and decision impact.", "weights": {"structure": 2, "writing_voice": 1}},
+        "d": {"label": "Rhythm and readability.", "weights": {"taste": 2, "writing_voice": 1}}
+      }
+    },
+    {
+      "id": "q24",
+      "cluster": "writing",
+      "prompt": "A draft is wordy but has a strong point of view. What should the assistant do?",
+      "options": {
+        "a": {"label": "Compress aggressively.", "weights": {"brevity": 2, "writing_voice": -1}},
+        "b": {"label": "Keep the point of view; remove only friction.", "weights": {"writing_voice": 3, "taste": 1}},
+        "c": {"label": "Rewrite into a polished external-facing article.", "weights": {"writing_voice": -1, "structure": 1}},
+        "d": {"label": "Show before/after with rationale.", "weights": {"structure": 2, "evidence": 1}}
+      }
+    },
+    {
+      "id": "q25",
+      "cluster": "writing",
+      "prompt": "How should the assistant handle style rules?",
+      "options": {
+        "a": {"label": "Use broad good-writing defaults.", "weights": {"taste": 0}},
+        "b": {"label": "Follow explicit phrase-level constraints.", "weights": {"taste": 2, "writing_voice": 2}},
+        "c": {"label": "Prioritize audience outcome over rules.", "weights": {"writing_voice": -1, "autonomy": 1}},
+        "d": {"label": "Ask before changing voice or style.", "weights": {"clarification": 1, "writing_voice": 1}}
+      }
+    },
+    {
+      "id": "q26",
+      "cluster": "creative",
+      "prompt": "For creative work with a loose brief, what should the assistant do?",
+      "options": {
+        "a": {"label": "Stay close to the brief; avoid surprise.", "weights": {"novelty": -2}},
+        "b": {"label": "Pick one direction and explain why it fits the brief.", "weights": {"novelty": 1, "autonomy": 1, "taste": 1}},
+        "c": {"label": "Make a bold taste call and execute it.", "weights": {"novelty": 3, "taste": 2, "autonomy": 1}},
+        "d": {"label": "Ask for references first.", "weights": {"clarification": 2, "taste": 1}}
+      }
+    },
+    {
+      "id": "q27",
+      "cluster": "creative",
+      "prompt": "What kind of creative critique helps most?",
+      "options": {
+        "a": {"label": "Soft encouragement plus small suggestions.", "weights": {"directness": -2, "warmth": 2}},
+        "b": {"label": "Clear taste judgment and concrete fixes.", "weights": {"directness": 2, "taste": 2}},
+        "c": {"label": "Audience-focused critique.", "weights": {"evidence": 1, "structure": 1}},
+        "d": {"label": "Multiple alternatives without ranking.", "weights": {"autonomy": -1, "structure": 1}}
+      }
+    },
+    {
+      "id": "q28",
+      "cluster": "creative",
+      "prompt": "If an image/site/design looks generic, what should the assistant do?",
+      "options": {
+        "a": {"label": "Make conservative improvements.", "weights": {"risk": -1}},
+        "b": {"label": "Identify what makes it generic and propose sharper direction.", "weights": {"challenge": 2, "taste": 2}},
+        "c": {"label": "Generate several exploratory variants.", "weights": {"novelty": 2, "risk": 1}},
+        "d": {"label": "Ask what style the user prefers.", "weights": {"clarification": 1}}
+      }
+    },
+    {
+      "id": "q29",
+      "cluster": "research",
+      "prompt": "When reading a technical paper or article, what output is most useful?",
+      "options": {
+        "a": {"label": "Comprehensive summary.", "weights": {"brevity": -2}},
+        "b": {"label": "What changes my model, what to skip, and what to test next.", "weights": {"evidence": 2, "structure": 2}},
+        "c": {"label": "A tutorial explanation from basics.", "weights": {"brevity": -2, "clarification": 1}},
+        "d": {"label": "A list of citations and key claims.", "weights": {"evidence": 2, "structure": 1}}
+      }
+    },
+    {
+      "id": "q30",
+      "cluster": "research",
+      "prompt": "How should the assistant handle your prior knowledge?",
+      "options": {
+        "a": {"label": "Assume little; explain from scratch.", "weights": {"brevity": -2}},
+        "b": {"label": "Assume competence; skip basics unless needed.", "weights": {"brevity": 2, "autonomy": 1}},
+        "c": {"label": "Ask what I already know.", "weights": {"clarification": 1}},
+        "d": {"label": "State an assumed prior and let me correct it.", "weights": {"autonomy": 1, "fact_guess_plan": 1}}
+      }
+    },
+    {
+      "id": "q31",
+      "cluster": "research",
+      "prompt": "A source is interesting but unlikely to affect decisions. What should happen?",
+      "options": {
+        "a": {"label": "Still summarize it; I may use it later.", "weights": {"brevity": -1}},
+        "b": {"label": "Put it in a parking lot and move on.", "weights": {"brevity": 2, "speed": 1}},
+        "c": {"label": "Extract only one possible useful distinction.", "weights": {"evidence": 1, "brevity": 1}},
+        "d": {"label": "Ask whether to deep-read it.", "weights": {"clarification": 1}}
+      }
+    },
+    {
+      "id": "q32",
+      "cluster": "memory",
+      "prompt": "What should the assistant remember after a session?",
+      "options": {
+        "a": {"label": "Nothing unless I explicitly say remember.", "weights": {"memory": -2, "privacy": 2}},
+        "b": {"label": "Durable collaboration preferences and project facts.", "weights": {"memory": 2, "privacy": 1}},
+        "c": {"label": "Candidate preferences, but ask before promoting them to durable memory.", "weights": {"memory": 1, "privacy": 2, "fact_guess_plan": 1}},
+        "d": {"label": "Only decisions and artifacts, not personal traits.", "weights": {"memory": 1, "privacy": 3}}
+      }
+    },
+    {
+      "id": "q33",
+      "cluster": "memory",
+      "prompt": "How should the assistant use stored memory?",
+      "options": {
+        "a": {"label": "Use it freely if relevant.", "weights": {"memory": 2, "privacy": -1}},
+        "b": {"label": "Use it only when loaded and clearly relevant to the task.", "weights": {"memory": 2, "source_truth": 1, "privacy": 1}},
+        "c": {"label": "Ask before relying on old memory.", "weights": {"clarification": 1, "memory": -1}},
+        "d": {"label": "Treat memory as hints, not authority.", "weights": {"fact_guess_plan": 1, "source_truth": 1}}
+      }
+    },
+    {
+      "id": "q34",
+      "cluster": "memory",
+      "prompt": "When personalization would help, which boundary should the assistant relax first?",
+      "options": {
+        "a": {"label": "Infer only operational preferences repeated across tasks.", "weights": {"memory": 2, "privacy": 1}},
+        "b": {"label": "Infer project context freely, but not personal identity or values.", "weights": {"memory": 1, "privacy": 2}},
+        "c": {"label": "Do not relax boundaries; ask before personalizing.", "weights": {"clarification": 2, "privacy": 3}},
+        "d": {"label": "Use temporary session hints, then discard them.", "weights": {"memory": -1, "privacy": 2}}
+      }
+    },
+    {
+      "id": "q35",
+      "cluster": "mode",
+      "prompt": "Should collaboration style differ by domain?",
+      "options": {
+        "a": {"label": "No; use one consistent style everywhere.", "weights": {"mode_separation": -2}},
+        "b": {"label": "Yes; code, writing, research, and creative work need different defaults.", "weights": {"mode_separation": 3}},
+        "c": {"label": "Only distinguish high-stakes vs low-stakes work.", "weights": {"mode_separation": 1, "risk": -1}},
+        "d": {"label": "Ask me each time.", "weights": {"clarification": 2, "mode_separation": 1}}
+      }
+    },
+    {
+      "id": "q36",
+      "cluster": "mode",
+      "prompt": "In high-stakes work, which change matters most?",
+      "options": {
+        "a": {"label": "Use a grill-me pass before action.", "weights": {"stake_alignment": 3, "clarification": 2, "risk": -1}},
+        "b": {"label": "Higher evidence and verification threshold.", "weights": {"evidence": 2, "verification": 2}},
+        "c": {"label": "More conservative implementation.", "weights": {"risk": -2, "verification": 1}},
+        "d": {"label": "Escalate to a longer plan or expert review before acting.", "weights": {"planning_depth": 2, "cost_time": 2, "autonomy": -1}}
+      }
+    },
+    {
+      "id": "q37",
+      "cluster": "mode",
+      "prompt": "For personal admin tasks like calendar, inbox, purchases, or travel, what external-action default is right?",
+      "options": {
+        "a": {"label": "Draft or organize, but ask before any send, booking, purchase, or cancellation.", "weights": {"autonomy": -2, "privacy": 2, "mode_separation": 1}},
+        "b": {"label": "Proceed with low-risk organization, but ask before external commitments.", "weights": {"autonomy": 1, "privacy": 1, "mode_separation": 2}},
+        "c": {"label": "Recommend the best option, then wait for approval.", "weights": {"structure": 1, "clarification": 1, "mode_separation": 1}},
+        "d": {"label": "Optimize for speed if cost, money, privacy, and deletion are not involved.", "weights": {"autonomy": 2, "speed": 1, "privacy": 1}}
+      }
+    },
+    {
+      "id": "q38",
+      "cluster": "identity",
+      "prompt": "The assistant made a mistake. What response helps most?",
+      "options": {
+        "a": {"label": "Briefly acknowledge, fix it, and avoid a long explanation.", "weights": {"error_recovery": -1, "brevity": 2}},
+        "b": {"label": "Explain the cause, the fix, and how it will be avoided next time.", "weights": {"error_recovery": 3, "fact_guess_plan": 1}},
+        "c": {"label": "Show the corrected artifact first, then note the mistake.", "weights": {"error_recovery": 1, "autonomy": 1, "brevity": 1}},
+        "d": {"label": "Pause and ask how much postmortem detail I want.", "weights": {"clarification": 1, "error_recovery": 1}}
+      }
+    },
+    {
+      "id": "q39",
+      "cluster": "identity",
+      "prompt": "After completing the requested task, how proactive should the assistant be?",
+      "options": {
+        "a": {"label": "Stop at the requested deliverable unless I ask for more.", "weights": {"proactivity": -2, "brevity": 1}},
+        "b": {"label": "Mention only adjacent risks or blockers.", "weights": {"proactivity": 1, "evidence": 1}},
+        "c": {"label": "Suggest the smallest useful next action.", "weights": {"proactivity": 2, "autonomy": 1}},
+        "d": {"label": "Offer a broader roadmap or opportunity map.", "weights": {"proactivity": 3, "novelty": 1, "structure": 1}}
+      }
+    },
+    {
+      "id": "q40",
+      "cluster": "identity",
+      "prompt": "After 5-10 tasks, how should this profile evolve?",
+      "options": {
+        "a": {"label": "Stay stable unless I explicitly update it.", "weights": {"memory": -1, "privacy": 1}},
+        "b": {"label": "Update based on repeated corrections and evidence.", "weights": {"memory": 2, "evidence": 1}},
+        "c": {"label": "Ask me for recalibration periodically.", "weights": {"clarification": 1, "memory": 1}},
+        "d": {"label": "Keep candidate preferences separate until validated.", "weights": {"fact_guess_plan": 2, "privacy": 1}}
+      }
+    }
+  ]
+}

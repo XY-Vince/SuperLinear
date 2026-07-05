@@ -1,0 +1,5 @@
+.DS_Store
+
+# whoami-skill generated private artifacts
+identity/whoami/answers/*.json
+identity/whoami/profiles/*.md
