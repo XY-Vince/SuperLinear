@@ -1,0 +1,196 @@
+[
+  {
+    "id": "2330295",
+    "title": "Data Science Internship Panel + KICK-OFF: Environmental Data Science @ Yale",
+    "dates": "Fri, Sep 18, 2026 9 AM – 10 AM",
+    "starts_at": "2026-09-18T09:00:00-04:00",
+    "ends_at": "2026-09-18T10:00:00-04:00",
+    "ends_at_unknown": false,
+    "location": "Private Location (sign in to display)",
+    "host": "Environmental Data Science at Yale (EDSY) SIG",
+    "category": "Info Session",
+    "food_status": "provided",
+    "food_cost": "unknown",
+    "food_cost_notes": [],
+    "benefit_notes": [],
+    "admission_cost": "free",
+    "admission_notes": [],
+    "eligibility": "unknown",
+    "rsvp_status": "建议 RSVP",
+    "food_signals": [
+      "Food Provided (详情页徽章)",
+      "bagels",
+      "breakfast mentioned",
+      "food provided"
+    ],
+    "evidence": [
+      "详情页明确标注 'Food Provided' 徽章",
+      "...community where data meets the environment! Food Provided (Olmo Bagels)",
+      "...a meets the environment! Food Provided (Olmo Bagels)"
+    ],
+    "confidence": "needs_verification",
+    "details_verified": true,
+    "url": "https://yaleconnect.yale.edu/rsvp_boot?id=2330295",
+    "source_channel": "YaleConnect 列表流"
+  },
+  {
+    "id": "2329688",
+    "title": "YSPH Club & Activity Fair",
+    "dates": "Fri, Sep 18, 2026 1 PM – 3 PM",
+    "starts_at": "2026-09-18T13:00:00-04:00",
+    "ends_at": "2026-09-18T15:00:00-04:00",
+    "ends_at_unknown": false,
+    "location": "Private Location (sign in to display)",
+    "host": "Student Association of Yale School of Public Health",
+    "category": "Fair/Festival",
+    "food_status": "provided",
+    "food_cost": "unknown",
+    "food_cost_notes": [],
+    "benefit_notes": [],
+    "admission_cost": "free",
+    "admission_notes": [],
+    "eligibility": "unknown",
+    "rsvp_status": "建议 RSVP",
+    "food_signals": [
+      "treats/snacks"
+    ],
+    "evidence": [
+      "...ations that YPSH has to offer, with some fun sweet treats and a raffle!"
+    ],
+    "confidence": "needs_verification",
+    "details_verified": true,
+    "url": "https://yaleconnect.yale.edu/rsvp_boot?id=2329688",
+    "source_channel": "YaleConnect 列表流"
+  },
+  {
+    "id": "2331237",
+    "title": "East Rock + Elena's Ice Cream PLee Event",
+    "dates": "Fri, Sep 18, 2026 2 PM – 4 PM",
+    "starts_at": "2026-09-18T14:00:00-04:00",
+    "ends_at": "2026-09-18T16:00:00-04:00",
+    "ends_at_unknown": false,
+    "location": "Private Location (sign in to display) (集合点: Meet at Phelps Gate on Old Campus this Friday)",
+    "host": "Middle Eastern and North African (MENA) Cultural Community",
+    "category": "Trip/Trek/Retreat",
+    "food_status": "provided",
+    "food_cost": "free",
+    "food_cost_notes": [
+      "明确说明餐饮免费/赞助"
+    ],
+    "benefit_notes": [],
+    "admission_cost": "free",
+    "admission_notes": [],
+    "eligibility": "unknown",
+    "rsvp_status": "免费领取需 RSVP",
+    "food_signals": [
+      "Food Provided (详情页徽章)",
+      "food provided",
+      "ice cream",
+      "treats/snacks"
+    ],
+    "evidence": [
+      "详情页明确标注 'Food Provided' 徽章",
+      "...Old Campus this Friday, September 18 @ 2 PM. Food Provided (Ice Cream from Elena's! Please make sure to...",
+      "East Rock + Elena's Ice Cream PLee Event | Category: Trip/Trek/Retreat | T..."
+    ],
+    "confidence": "confirmed_free",
+    "details_verified": true,
+    "url": "https://yaleconnect.yale.edu/rsvp_boot?id=2331237",
+    "source_channel": "YaleConnect 列表流"
+  },
+  {
+    "id": "2330437",
+    "title": "Lorax TGIF!",
+    "dates": "Fri, Sep 18, 2026 5 PM – 7 PM",
+    "starts_at": "2026-09-18T17:00:00-04:00",
+    "ends_at": "2026-09-18T19:00:00-04:00",
+    "ends_at_unknown": false,
+    "location": "Private Location (sign in to display)",
+    "host": "Forestry Club (FC)",
+    "category": "Social",
+    "food_status": "provided",
+    "food_cost": "unknown",
+    "food_cost_notes": [],
+    "benefit_notes": [],
+    "admission_cost": "free",
+    "admission_notes": [],
+    "eligibility": "unknown",
+    "rsvp_status": "建议 RSVP",
+    "food_signals": [
+      "Food (列表标签)",
+      "Food Provided (详情页徽章)",
+      "food provided"
+    ],
+    "evidence": [
+      "详情页明确标注 'Food Provided' 徽章",
+      "列表标签标注 'Food'",
+      "...w YSE Students who also speak for the trees! Food Provided"
+    ],
+    "confidence": "needs_verification",
+    "details_verified": true,
+    "url": "https://yaleconnect.yale.edu/rsvp_boot?id=2330437",
+    "source_channel": "YaleConnect 列表流"
+  },
+  {
+    "id": "2330205",
+    "title": "Intercultural First Year & Transfer Student Mixer",
+    "dates": "Fri, Sep 18, 2026 5:30 PM – 6:30 PM",
+    "starts_at": "2026-09-18T17:30:00-04:00",
+    "ends_at": "2026-09-18T18:30:00-04:00",
+    "ends_at_unknown": false,
+    "location": "Private Location (sign in to display)",
+    "host": "La Casa Cultural Julia de Burgos: The Latino Cultural Center at Yale",
+    "category": "Social",
+    "food_status": "provided",
+    "food_cost": "unknown",
+    "food_cost_notes": [],
+    "benefit_notes": [],
+    "admission_cost": "free",
+    "admission_notes": [],
+    "eligibility": "面向 Yale College 新生、转学生及 Eli Whitney 学生",
+    "rsvp_status": "先到先得 (建议 RSVP)",
+    "food_signals": [
+      "food provided"
+    ],
+    "evidence": [
+      "...to welcome you and we can’t wait to meet you!Food will be served on a first-come, first-served basis."
+    ],
+    "confidence": "needs_verification",
+    "details_verified": true,
+    "url": "https://yaleconnect.yale.edu/rsvp_boot?id=2330205",
+    "source_channel": "YaleConnect 列表流"
+  },
+  {
+    "id": "2329433",
+    "title": "Hanppuri Class of 2030 Welcome Event (신입생 환영회)",
+    "dates": "Fri, Sep 18, 2026 8:00 PM – Sat, Sep 19, 2026 12:00 AM",
+    "starts_at": "2026-09-18T20:00:00-04:00",
+    "ends_at": "2026-09-19T00:00:00-04:00",
+    "ends_at_unknown": false,
+    "location": "Silliman Sal's Room",
+    "host": "Hanppuri",
+    "category": "Social",
+    "food_status": "provided",
+    "food_cost": "unknown",
+    "food_cost_notes": [],
+    "benefit_notes": [],
+    "admission_cost": "free",
+    "admission_notes": [],
+    "eligibility": "unknown",
+    "rsvp_status": "建议 RSVP",
+    "food_signals": [
+      "Food Provided (详情页徽章)",
+      "food provided",
+      "pizza"
+    ],
+    "evidence": [
+      "详情页明确标注 'Food Provided' 徽章",
+      "...ave fun board games and team games prepared. Food Provided (We will have pizza, wings, and drinks.)",
+      "...games prepared. Food Provided (We will have pizza, wings, and drinks.)"
+    ],
+    "confidence": "needs_verification",
+    "details_verified": true,
+    "url": "https://yaleconnect.yale.edu/rsvp_boot?id=2329433",
+    "source_channel": "YaleConnect 列表流"
+  }
+]

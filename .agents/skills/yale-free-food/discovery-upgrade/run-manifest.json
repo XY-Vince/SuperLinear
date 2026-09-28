@@ -1,0 +1,108 @@
+{
+  "version": "2.4.0-closeout-verified",
+  "generated_at": "2026-09-27T18:30:00-04:00",
+  "target_window": {
+    "from_date": "2026-09-27",
+    "to_date": "2026-10-03",
+    "days": 7,
+    "interval_notation": "[2026-09-27 00:00 EDT, 2026-10-04 00:00 EDT)",
+    "timezone": "America/New_York"
+  },
+  "profiles_supported": [
+    "quick",
+    "daily",
+    "deep"
+  ],
+  "active_profile": "daily",
+  "search_mode": "agent_tools_and_multi_source_crawling",
+  "storage": {
+    "type": "sqlite3_and_atomic_json",
+    "state_db": "data/runtime/state.db",
+    "supplement_json": "data/runtime/supplemental_events.json",
+    "discovery_ledger": "data/runtime/discovery-ledger.jsonl"
+  },
+  "discovery_metrics": {
+    "target_date_agenda_count": 2,
+    "target_date_confirmed_free": 0,
+    "target_date_food_provided_unknown_cost": 1,
+    "target_date_explicit_user_requests": 0,
+    "target_date_discovered_interest_events": 1,
+    "weekly_agenda_count": 30,
+    "weekly_confirmed_free": 0,
+    "weekly_food_provided_unknown_cost": 2,
+    "weekly_explicit_user_requests": 0,
+    "weekly_discovered_interest_events": 26,
+    "unscheduled_leads_count": 2,
+    "unit_test_count": 117,
+    "unit_test_failures": 0,
+    "transfer_probes_count": 5,
+    "transfer_probes_passed": 5,
+    "boundary_probes_passed": 4,
+    "offline_replay_urlopen_attempts": 0,
+    "live_adapter_fetch_events_invoked": true,
+    "parse_event_list_exported": true,
+    "detail_queue_execution_verified": true
+  },
+  "code_hashes": {
+    "scripts/briefing.py": "3d146e9208544a631db1317a3b00f5e09c654325091cf0453f08b78b9cceb024",
+    "scripts/build_verified_runtime.py": "65af41abd8962c85beaacff96c41a4b94952dfcbaef55a2a3cb54a466f826eba",
+    "scripts/discovery.py": "d0a65349c9b846687d44ccf4f2b988d8898ed5d292dca4bb501b4d627fe02d70",
+    "scripts/event_store.py": "055724102c3b896fde10ef2d83114139d81e03dec2cdf64e519a230339365746",
+    "scripts/fetch_free_food.py": "3d48c573c412e1d06b6a7f9b20f4fd578b2e4cee20b6c14463eab7bcac06ff95",
+    "scripts/ingest_multi_source.py": "17388869f0deb5505623f1aad229b150615b4a852bc625007a7b8f516400dc47",
+    "references/source-seeds.json": "325378e4ab2288c85360ebad552a573b2f4b14c8d7a418be49a2c8f182dc9d52",
+    "tests/test_boundary_r4.py": "e033dbd81c5fe155884dcc0d341ea693acca2e9f73468ec1e4d89b201afb08a0",
+    "tests/test_closeout_details.py": "a2ac74a8fe10948eb512edcfe9899a3e197497215d521dcdf19f89c61307e92a",
+    "tests/transfer_probes.py": "74b00971f79a1ec7a93cc4bc62961abe0f63c65a152d0d2d09df9e4198a72adf",
+    "data/research-live-search.jsonl": "1e116e523f2cf908981379f1567ce1341d66bbca3d388bdf2bd58f1d0246d884",
+    "data/observations/search_observations.jsonl": "a7dbd400acc169beffae24144756849a768f1bd7fcf61f10d390cc54d873c574"
+  },
+  "discovery_chains_verified": [
+    {
+      "chain_id": "chain-1-tsaicity",
+      "name": "Tsai CITY 日历 -> Lu.ma 活动 -> 主办方日历 -> 远期活动",
+      "root_url": "https://city.yale.edu/events",
+      "hop_1_event_url": "https://luma.com/lne1y89w",
+      "hop_1_title": "Founder Lunch & Learn: Identify What Matters (10/2 11:30–12:30 EDT)",
+      "hop_1_location": "Tsai Center for Innovative Thinking at Yale, 17 Prospect St, New Haven, CT 06511",
+      "hop_2_organizer_url": "https://luma.com/attsaiCITY?k=c",
+      "hop_3_event_url": "https://luma.com/o8a6285z",
+      "hop_3_title": "Founder Lunch & Learn: Imagine Your Next Move (10/9 11:30–12:30 EDT)",
+      "status": "verified_offline_and_live"
+    },
+    {
+      "chain_id": "chain-2-poorvu",
+      "name": "Poorvu Center 日历 -> HTML 卡片提取 -> 诚实列表属性与独立记录",
+      "root_url": "https://poorvucenter.yale.edu/events",
+      "event_1_url": "https://poorvucenter.yale.edu/events/2026-09-30-eli-whitney-transfer-student-caffeinated-commons-w-fellowships-funding",
+      "event_1_title": "Eli Whitney & Transfer Student Caffeinated Commons (Session 1, 9/30 15:00–17:00 EDT)",
+      "event_2_url": "https://poorvucenter.yale.edu/events/2026-10-01-eli-whitney-transfer-student-caffeinated-commons-w-fellowships-funding",
+      "event_2_title": "Eli Whitney & Transfer Student Caffeinated Commons (Session 2, 10/1 09:30–11:30 EDT)",
+      "card_attributes": "details_verified=0, admission_cost=unknown, host derived from base_url",
+      "status": "verified_offline_and_live"
+    },
+    {
+      "chain_id": "chain-3-english-institute",
+      "name": "种子入口 -> 会议主页 -> Eventbrite 票务页与分级门票及完整餐歇",
+      "root_url": "https://englishinstitute.yale.edu/2026-conference",
+      "hop_1_event_url": "https://www.eventbrite.com/e/the-english-institute-83rd-annual-meeting-tickets-1987005227123",
+      "event_title": "The English Institute 83rd Annual Meeting",
+      "location": "Humanities Quadrangle (HQ), 320 York Street, New Haven, CT",
+      "tier_pricing": "$0–$50 (AggregateOffer dynamic range)",
+      "status": "verified_offline_and_live"
+    },
+    {
+      "chain_id": "chain-4-stm",
+      "name": "Saint Thomas More 日历主页 -> More House Lecture 讲座与 Reception",
+      "root_url": "https://stm.yale.edu/lectures",
+      "child_url": "https://stm.yale.edu/events-details/MoreHouseLecture-092726",
+      "event_title": "More House Lecture: Fr. James Keenan, SJ: Christian Hope Was Born on Golgotha",
+      "starts_at": "2026-09-27T18:15:00-04:00",
+      "location": "Lecture Hall, Saint Thomas More Catholic Chapel & Center at Yale, 268 Park St, New Haven, CT",
+      "food_status": "likely",
+      "participation_note": "公开讲座后有 reception，餐饮及酒水安排待现场核实；免费入场。",
+      "status": "verified_parent_child_and_reception_note"
+    }
+  ],
+  "stop_reason": "r4_verified_boundary_yaleconnect_wired_replay_isolated_factual_corrections_completed"
+}

@@ -1,0 +1,51 @@
+{
+  "events": [
+    {
+      "id": "luma:ijoov0uc",
+      "title": "WorkBuddy — Hello Buddy @ Yale",
+      "url": "https://luma.com/ijoov0uc",
+      "starts_at": "2026-09-27T15:00:00-04:00",
+      "ends_at": "2026-09-27T17:00:00-04:00",
+      "location": "New Haven；具体地点仅向已注册参加者显示",
+      "food_status": "unclear",
+      "food_cost": "unknown",
+      "admission_cost": "free",
+      "confidence": "needs_verification",
+      "user_requested": true,
+      "eligibility": "需主办方批准",
+      "rsvp_status": "Request to Join；注册须经批准",
+      "record_kind": "user_interest",
+      "participation_note": "先申请并查看是否获批，再确认地点；公开页未说明供餐。",
+      "field_provenance": {
+        "starts_at": "workbuddy.html：正文及JSON-LD",
+        "ends_at": "workbuddy.html：正文及JSON-LD",
+        "admission_cost": "workbuddy.html：JSON-LD offers.price=0 USD",
+        "food_status": "公开页未发现供餐声明；不等于确认不供餐"
+      }
+    },
+    {
+      "id": "user:yvc-venture-night-2026-09-27",
+      "title": "YVC — Yale Venture Night 2026",
+      "url": "https://forms.gle/iQK6h299GVXHej7X9",
+      "starts_at": "2026-09-27T19:00:00-04:00",
+      "ends_at": "2026-09-27T22:00:00-04:00",
+      "location": "unknown；以邀请函为准",
+      "food_status": "unclear",
+      "food_cost": "unknown",
+      "admission_cost": "unknown",
+      "confidence": "needs_verification",
+      "user_requested": true,
+      "eligibility": "申请者经筛选后受邀",
+      "rsvp_status": "申请及邀请制；已有邀请者以邀请函为准",
+      "record_kind": "user_interest",
+      "participation_note": "19:00–22:00来自你的邀请信息；核对邀请函地点及准入，餐饮与费用未确认。",
+      "field_provenance": {
+        "starts_at": "用户本轮提供：Sep 27, 7:00–10:00 PM；公开申请页未提供日期时间",
+        "ends_at": "用户本轮邀请信息；不沿用旧样例的22:30",
+        "location": "公开申请页未提供；不沿用旧样例LC102",
+        "eligibility": "yvc.html：请填写以下信息，我们将会邀请入选的申请者参加Venture Night",
+        "food_status": "公开申请页未提供餐饮信息"
+      }
+    }
+  ]
+}

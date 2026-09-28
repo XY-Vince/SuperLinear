@@ -1,0 +1,57 @@
+{
+  "https://city.yale.edu/events": {
+    "file": "city_yale_edu_events.html",
+    "cached_at": "2026-09-27T08:00:00-04:00",
+    "sha256": "4a8cd206af6d04aaa8f2dbeb3699ce5d06fccc1078cd6502b37e81be727493cd",
+    "size_bytes": 96491,
+    "source_url": "https://city.yale.edu/events"
+  },
+  "https://luma.com/lne1y89w": {
+    "file": "luma_lne1y89w.html",
+    "cached_at": "2026-09-27T08:00:00-04:00",
+    "sha256": "00fc138a93e84f4c5b9dbb166eb479889e9511d11c1312aa2c1db1a54c28e551",
+    "size_bytes": 128058,
+    "source_url": "https://luma.com/lne1y89w"
+  },
+  "https://luma.com/o8a6285z": {
+    "file": "luma_o8a6285z.html",
+    "cached_at": "2026-09-27T08:00:00-04:00",
+    "sha256": "0de83f92fcbe5786bc04f09dbf73018bcb7a065c8f794badf81063c2ef426b94",
+    "size_bytes": 128455,
+    "source_url": "https://luma.com/o8a6285z"
+  },
+  "https://poorvucenter.yale.edu/events": {
+    "file": "poorvucenter_events.html",
+    "cached_at": "2026-09-27T08:00:00-04:00",
+    "sha256": "7a7002cea6e9b939c5887f456e6729aa65c9f2a6443dec4250ca282b887079b5",
+    "size_bytes": 170611,
+    "source_url": "https://poorvucenter.yale.edu/events"
+  },
+  "https://englishinstitute.yale.edu/2026-conference": {
+    "file": "englishinstitute_2026_conference.html",
+    "cached_at": "2026-09-27T08:00:00-04:00",
+    "sha256": "422bdabbaef00cc3cc2ac18ac245bf5ccccaf8ee3f164808395303eb07741e0f",
+    "size_bytes": 32518,
+    "source_url": "https://englishinstitute.yale.edu/2026-conference"
+  },
+  "https://www.eventbrite.com/e/the-english-institute-83rd-annual-meeting-tickets-1987005227123": {
+    "file": "eventbrite_english_institute.html",
+    "cached_at": "2026-09-27T08:00:00-04:00",
+    "sha256": "fc238698cc5698103b51af67f6864c3cc399043c3f608515bd51d36847fa1c2d",
+    "size_bytes": 207586,
+    "source_url": "https://www.eventbrite.com/e/the-english-institute-83rd-annual-meeting-tickets-1987005227123"
+  },
+  "https://luma.com/inrd9ssh": {
+    "file": "luma_inrd9ssh.html",
+    "cached_at": "2026-09-27T08:00:00-04:00",
+    "sha256": "41e6d4d5aa7bb4d64c08b38c70e2250abdb7b1307c06d601af9056d8af26e80f",
+    "size_bytes": 122416,
+    "source_url": "https://luma.com/inrd9ssh"
+  },
+  "https://stm.yale.edu/lectures": {
+    "file": "stm_lectures.html",
+    "cached_at": "2026-09-27T08:00:00-04:00",
+    "sha256": "stm_lectures_catalog_hash",
+    "source_url": "https://stm.yale.edu/lectures"
+  }
+}

@@ -1,0 +1,134 @@
+[
+  {
+    "source_id": "tsai_city",
+    "name": "Tsai Center for Innovative Thinking at Yale (CITY)",
+    "entry_url": "https://city.yale.edu/events",
+    "family": "campus_innovation",
+    "adapter": "html_luma_link",
+    "status": "operational",
+    "date_capability": "range_and_upcoming",
+    "seasonality": "academic_year",
+    "discovery_parent": "https://city.yale.edu"
+  },
+  {
+    "source_id": "luma_yale_table",
+    "name": "The Yale Table (Lu.ma Calendar)",
+    "entry_url": "https://luma.com/TheYaleTable",
+    "family": "external_luma",
+    "adapter": "luma_calendar",
+    "status": "candidate",
+    "date_capability": "upcoming_and_past",
+    "seasonality": "continuous",
+    "discovery_parent": "https://luma.com"
+  },
+  {
+    "source_id": "oiss_calendar",
+    "name": "Office of International Students & Scholars (OISS)",
+    "entry_url": "https://oiss.yale.edu/events",
+    "family": "international_student",
+    "adapter": "oiss_html",
+    "status": "operational",
+    "date_capability": "month_and_list",
+    "seasonality": "continuous",
+    "discovery_parent": "https://oiss.yale.edu"
+  },
+  {
+    "source_id": "ysm_calendar",
+    "name": "Yale School of Medicine Events Calendar",
+    "entry_url": "https://medicine.yale.edu/calendar/",
+    "family": "medical_school",
+    "adapter": "ysm_html",
+    "status": "operational",
+    "date_capability": "daily_and_range",
+    "seasonality": "continuous",
+    "discovery_parent": "https://medicine.yale.edu"
+  },
+  {
+    "source_id": "bioct_events",
+    "name": "BioCT Bioscience Community Events",
+    "entry_url": "https://www.bioct.org/events/",
+    "family": "biotech_regional",
+    "adapter": "bioct_html",
+    "status": "operational",
+    "date_capability": "upcoming_list",
+    "seasonality": "continuous",
+    "discovery_parent": "https://www.bioct.org"
+  },
+  {
+    "source_id": "windham_campbell_2026",
+    "name": "Windham-Campbell Literature Prizes & Festival",
+    "entry_url": "https://windhamcampbell.org/festivals/2026",
+    "family": "literary_annual",
+    "adapter": "annual_festival",
+    "status": "operational",
+    "date_capability": "festival_schedule",
+    "seasonality": "annual_september",
+    "discovery_parent": "https://windhamcampbell.org"
+  },
+  {
+    "source_id": "yale_seas",
+    "name": "Yale School of Engineering & Applied Science (SEAS)",
+    "entry_url": "https://seas.yale.edu/news-events/events",
+    "family": "engineering_tech",
+    "adapter": "seas_html",
+    "status": "operational",
+    "date_capability": "upcoming_list",
+    "seasonality": "academic_year",
+    "discovery_parent": "https://seas.yale.edu"
+  },
+  {
+    "source_id": "yale_poorvu",
+    "name": "Poorvu Center for Teaching and Learning",
+    "entry_url": "https://poorvucenter.yale.edu/events",
+    "family": "academic_support",
+    "adapter": "dept_calendar",
+    "status": "operational",
+    "date_capability": "upcoming_list",
+    "seasonality": "academic_year",
+    "discovery_parent": "https://poorvucenter.yale.edu"
+  },
+  {
+    "source_id": "yale_judaic_studies",
+    "name": "Yale Program in Judaic Studies",
+    "entry_url": "https://judaicstudies.yale.edu/events",
+    "family": "humanities_dept",
+    "adapter": "dept_calendar",
+    "status": "operational",
+    "date_capability": "upcoming_list",
+    "seasonality": "academic_year",
+    "discovery_parent": "https://judaicstudies.yale.edu"
+  },
+  {
+    "source_id": "yale_connect",
+    "name": "YaleConnect Campus Groups & Events Portal",
+    "entry_url": "https://yaleconnect.yale.edu/events",
+    "family": "campus_portal",
+    "adapter": "yaleconnect_api",
+    "status": "operational",
+    "date_capability": "paginated_feed",
+    "seasonality": "continuous",
+    "discovery_parent": "https://yaleconnect.yale.edu"
+  },
+  {
+    "source_id": "english_institute",
+    "name": "The English Institute Annual Conference",
+    "entry_url": "https://englishinstitute.yale.edu/2026-conference",
+    "family": "academic_symposium",
+    "adapter": "html_eventbrite_link",
+    "status": "operational",
+    "date_capability": "annual_conference",
+    "seasonality": "annual_fall",
+    "discovery_parent": "https://englishinstitute.yale.edu"
+  },
+  {
+    "source_id": "saint_thomas_more",
+    "name": "Saint Thomas More Catholic Chapel & Center at Yale Lectures",
+    "entry_url": "https://stm.yale.edu/lectures",
+    "family": "campus_chapel_lectures",
+    "adapter": "stm_html",
+    "status": "operational",
+    "date_capability": "upcoming_list",
+    "seasonality": "academic_year",
+    "discovery_parent": "https://stm.yale.edu"
+  }
+]

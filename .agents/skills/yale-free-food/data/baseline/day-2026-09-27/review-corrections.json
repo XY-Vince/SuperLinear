@@ -1,0 +1,8 @@
+[
+  {"id":"2332541","evidence_source":"disabili-tea.html（本轮公开页核对）","reason":"正文明确提供免费点心与茶饮；原unclear为漏判。","fields":{"food_status":"provided","confidence":"confirmed_free","eligibility":"all are welcome","location":"Pistachio Cafe 2, 1245 Chapel Street","participation_note":"明确免费点心与茶饮；公开页显示免费RSVP。"}},
+  {"id":"2332131","evidence_source":"source-run.json：evidence","reason":"We’ll also have snacks明确提供零食；私人地点不证明成员限定。","fields":{"food_status":"provided","eligibility":"unknown","participation_note":"提供水果、奶酪和饼干，餐费未知；需登录查看地点。"}},
+  {"id":"2328375","evidence_source":"source-run.json：evidence","reason":"Snacks ... are here为供餐证据；保留新生资格提示。","fields":{"food_status":"provided","eligibility":"面向First-Year；其他人员能否参加未知","participation_note":"零食及STEM学习支持；餐费未知，报名截止17:00。"}},
+  {"id":"2331535","evidence_source":"source-run.json：Food Provided徽章原文","reason":"餐饮说明指向20:00后续活动，不证明19:00另供餐。","fields":{"related_event_ids":["2330805"],"eligibility":"unknown","participation_note":"19:00正念活动；餐饮指向20:00 Tea & Mochi，不另计为独立供餐机会。"}},
+  {"id":"2331115","evidence_source":"source-run.json：evidence","reason":"most, if not all of our general meetings是系列性条件陈述。","fields":{"participation_note":"系列会议通常有零食；不能保证本次供应，餐费未知。"}},
+  {"id":"2330805","evidence_source":"source-run.json：location","reason":"登录后显示地点不等同于特定成员限定。","fields":{"eligibility":"unknown","participation_note":"草本茶与麻糬；餐费未知，需登录查看地点。"}}
+]

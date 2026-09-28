@@ -1,0 +1,56 @@
+{
+  "events": [
+    {
+      "id": "wechat:2026-yvc-reception",
+      "title": "耶鲁创投之夜 2026｜嘉宾名单",
+      "dates": "Sun, Sep 27, 2026 07:00 PM – 10:30 PM",
+      "starts_at": "2026-09-27T19:00:00-04:00",
+      "ends_at": "2026-09-27T22:30:00-04:00",
+      "location": "Linsly-Chittenden Hall, Room 102 (LC 102)",
+      "host": "耶鲁创投俱乐部 (YVC)",
+      "category": "Venture/Keynote/Social",
+      "food_status": "likely",
+      "food_cost": "unknown",
+      "admission_cost": "free",
+      "eligibility": "Founders, Investors, Researchers, Students",
+      "rsvp_status": "RSVP required",
+      "confidence": "needs_verification",
+      "food_signals": [
+        "reception"
+      ],
+      "evidence": [
+        "9:50 PM - 10:30 PM Reception"
+      ],
+      "details_verified": true,
+      "url": "https://forms.gle/iQK6h299GVXHej7X9",
+      "record_kind": "food_candidate"
+    }
+  ],
+  "unverified_food_leads": [
+    {
+      "id": "luma:ijoov0uc",
+      "title": "Hello Buddy @ Yale",
+      "dates": "Sun, Sep 27, 2026 03:00 PM – 05:00 PM",
+      "starts_at": "2026-09-27T15:00:00-04:00",
+      "ends_at": "2026-09-27T17:00:00-04:00",
+      "location": "New Haven, CT",
+      "host": "Lu.ma Host / Community Partner",
+      "category": "Tech/AI/Social",
+      "food_status": "unclear",
+      "food_cost": "unknown",
+      "admission_cost": "free",
+      "eligibility": "Everyone (RSVP via Luma)",
+      "rsvp_status": "RSVP required",
+      "confidence": "needs_verification",
+      "food_signals": [
+        "community meetup"
+      ],
+      "evidence": [
+        "AI × Productivity × Community Meetup"
+      ],
+      "details_verified": true,
+      "url": "https://luma.com/ijoov0uc?tk=w7a7Gl",
+      "record_kind": "unverified_food_lead"
+    }
+  ]
+}
