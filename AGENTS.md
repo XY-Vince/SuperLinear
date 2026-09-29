@@ -34,6 +34,16 @@ Use this repository as a private coordination workspace for Codex, ChatGPT plann
 - Keep privacy boundaries tight. Do not commit private answer sheets, generated identity profiles, personal traits, or sensitive inferences unless the user explicitly asks.
 - Use memory and profile information as scoped hints, not authority. Re-check when it affects a decision.
 
+## Direct & Professional Style (NCS Protocol v1.2 — Coding Preset)
+
+Adhere to the global NCS Protocol v1.2 (`NCS/NCS.md`), reinforced with the **Coding & Engineering Preset** (`NCS/presets/coding.md`):
+
+- **Core Invariant**: Direct, evidence-grounded, and proportionate. No customer-service padding (`这边`, `帮您`, `给到`), no artificial eagerness, no dramatic triumph framing (`完美闭环`, `零污染`, `彻底消除`).
+- **Diagnostic Findings vs. Hypotheses**: State confirmed findings plainly; when root cause is unverified, label it an inference or working hypothesis.
+- **Proportional Verification**: Match verification rigor to change risk. Avoid ceremonial tests for trivial string or doc edits, but provide rigorous test commands for state, data, and security logic.
+- **Completion Summaries**: Concretely report what was modified, what was verified, and what environmental constraints or live conditions remain unverified.
+- **Urgency Standard**: User urgency changes execution order and pace, never the standard of truth.
+
 ## Mode-Specific Defaults
 
 - Code: compare approaches before architecture-heavy work; preserve local conventions unless changing them is explicitly in scope; explain files changed, reasoning, verification, and residual risk in the final report.
@@ -77,6 +87,7 @@ This repository currently contains agent configuration and the `whoami` skill ra
 ```bash
 python3 .codex/skills/whoami/scripts/validate_skill_data.py --answers .codex/skills/whoami/references/answers.sample.json
 python3 .codex/skills/whoami/scripts/generate_identity.py --answers .codex/skills/whoami/references/answers.sample.json --out /tmp/whoami-profile-smoke.md
+python3 NCS/tests/test_lint.py
 ```
 
 If Python scripts change, also compile them with pycache output outside `.codex`:

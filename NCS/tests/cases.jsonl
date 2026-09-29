@@ -1,0 +1,58 @@
+{"id": "pair_zhebian_filler_1", "text": "我这边查到价格是 50 元。", "expected_warn": true, "category": "style_warning", "expected_rules": ["zhebian_filler"], "expected_count": 1}
+{"id": "pair_zhebian_allow_1", "text": "路这边有一个自提柜。", "expected_warn": false, "expected_count": 0, "expected_rules": []}
+{"id": "pair_zhebian_allow_2", "text": "请在门这边等候。", "expected_warn": false, "expected_count": 0, "expected_rules": []}
+{"id": "pair_zhebian_allow_3", "text": "往桌子这边靠一点。", "expected_warn": false, "expected_count": 0, "expected_rules": []}
+{"id": "pair_zhebian_allow_4", "text": "校区这边交通很方便。", "expected_warn": false, "expected_count": 0, "expected_rules": []}
+{"id": "nin_zhebian_1", "text": "您这边方便下午五点自提吗？", "expected_warn": true, "category": "style_warning", "expected_rules": ["nin_zhebian_filler"], "expected_count": 1}
+{"id": "nin_zhebian_clean", "text": "你下午五点方便自提吗？", "expected_warn": false, "expected_count": 0, "expected_rules": []}
+{"id": "geidao_filler_1", "text": "给到您一个具体的优化方案。", "expected_warn": true, "category": "style_warning", "expected_rules": ["geidao_filler"], "expected_count": 1}
+{"id": "geidao_filler_2", "text": "给到客户最优惠的折扣。", "expected_warn": true, "category": "style_warning", "expected_rules": ["geidao_filler"], "expected_count": 1}
+{"id": "geidao_allow_1", "text": "请把钥匙给到前台工作人员。", "expected_warn": false, "expected_count": 0, "expected_rules": []}
+{"id": "geidao_allow_2", "text": "把包裹给到前门门卫手里。", "expected_warn": false, "expected_count": 0, "expected_rules": []}
+{"id": "bangnin_filler_1", "text": "这边帮您查询了一下系统记录。", "expected_warn": true, "category": "style_warning", "expected_rules": ["bangnin_filler"], "expected_count": 1}
+{"id": "bangnin_filler_2", "text": "已经帮您核对过了，没有问题。", "expected_warn": true, "category": "style_warning", "expected_rules": ["bangnin_filler"], "expected_count": 1}
+{"id": "bangnin_allow_physical", "text": "我帮你把自行车搬下楼。", "expected_warn": false, "expected_count": 0, "expected_rules": []}
+{"id": "bangnin_allow_cognitive", "text": "我可以帮您核对译文，也可以解释不同译法。", "expected_warn": false, "expected_count": 0, "expected_rules": []}
+{"id": "bangnin_allow_service", "text": "如果有需要，我可以协助您整理这些文献。", "expected_warn": false, "expected_count": 0, "expected_rules": []}
+{"id": "zhekuai_classifier_cake", "text": "这块蛋糕很好吃。", "expected_warn": false, "expected_count": 0, "expected_rules": []}
+{"id": "zhekuai_classifier_wood", "text": "这块木板需要重新打磨固定。", "expected_warn": false, "expected_count": 0, "expected_rules": []}
+{"id": "zhekuai_classifier_land", "text": "这块土地归市政所有。", "expected_warn": false, "expected_count": 0, "expected_rules": []}
+{"id": "zhekuai_filler_1", "text": "这块的话我们建议尽快出手。", "expected_warn": true, "category": "style_warning", "expected_rules": ["zhekuai_filler"], "expected_count": 1}
+{"id": "zhekuai_filler_2", "text": "在架构这块上还需要进一步优化。", "expected_warn": true, "category": "style_warning", "expected_rules": ["zhekuai_filler"], "expected_count": 1}
+{"id": "ending_1", "text": "好的呢，这就去处理哈！", "expected_warn": true, "category": "style_warning", "expected_rules": ["service_endings"], "expected_count": 1}
+{"id": "ending_2", "text": "没问题的哈，包在身上。", "expected_warn": true, "category": "style_warning", "expected_rules": ["service_endings"], "expected_count": 1}
+{"id": "ending_clean_1", "text": "好的，收到。", "expected_warn": false, "expected_count": 0, "expected_rules": []}
+{"id": "ending_clean_2", "text": "可以，明天见。", "expected_warn": false, "expected_count": 0, "expected_rules": []}
+{"id": "en_opener_1", "text": "Certainly! Here is the updated code.", "expected_warn": true, "category": "style_warning", "expected_rules": ["en_servile_opener"], "expected_count": 1}
+{"id": "en_opener_2", "text": "Great question! Let me explain the background.", "expected_warn": true, "category": "style_warning", "expected_rules": ["en_servile_opener"], "expected_count": 1}
+{"id": "en_opener_3", "text": "Absolutely! Happy to help.", "expected_warn": true, "category": "style_warning", "expected_rules": ["en_servile_opener", "en_servile_opener"], "expected_count": 2}
+{"id": "en_opener_4", "text": "I would be happy to help with your project.", "expected_warn": true, "category": "style_warning", "expected_rules": ["en_servile_opener"], "expected_count": 1}
+{"id": "en_tech_1", "text": "Absolutely positioned elements use their containing block.", "expected_warn": false, "expected_count": 0, "expected_rules": []}
+{"id": "en_tech_2", "text": "An absolute path was specified in the configuration.", "expected_warn": false, "expected_count": 0, "expected_rules": []}
+{"id": "en_courtesy_1", "text": "Thanks for picking it up.", "expected_warn": false, "expected_count": 0, "expected_rules": []}
+{"id": "en_courtesy_2", "text": "Sounds good. See you at 5.", "expected_warn": false, "expected_count": 0, "expected_rules": []}
+{"id": "en_courtesy_3", "text": "Sorry, I can't make that time.", "expected_warn": false, "expected_count": 0, "expected_rules": []}
+{"id": "unbounded_1", "text": "所有缺陷已彻底消除，零风险上线。", "expected_warn": true, "category": "claim_review", "expected_rules": ["unbounded_success_claim"], "expected_count": 1}
+{"id": "unbounded_2", "text": "该方案完全解决了内存泄漏，彻底根治。", "expected_warn": true, "category": "claim_review", "expected_rules": ["unbounded_success_claim", "unbounded_success_claim"], "expected_count": 2}
+{"id": "bounded_1", "text": "117/117项已执行测试通过；尚未验证实时网络。", "expected_warn": false, "expected_count": 0, "expected_rules": []}
+{"id": "bounded_2", "text": "本轮发现的 3 处缺陷已修复，回归通过。", "expected_warn": false, "expected_count": 0, "expected_rules": []}
+{"id": "negation_1", "text": "目前尚未核实线上环境，不能保证100%安全。", "expected_warn": false, "expected_count": 0, "expected_rules": []}
+{"id": "negation_2", "text": "无法完全排除极端高并发下的边缘情况。", "expected_warn": false, "expected_count": 0, "expected_rules": []}
+{"id": "negation_3", "text": "并没有执行删除操作，数据仍然完整。", "expected_warn": false, "expected_count": 0, "expected_rules": []}
+{"id": "dramatic_1", "text": "已全量跑通，零污染、零风险，完美闭环。", "expected_warn": true, "category": "claim_review", "expected_rules": ["dramatic_or_dismissive_framing", "dramatic_or_dismissive_framing"], "expected_count": 2}
+{"id": "dramatic_2", "text": "正式目录绝对未触碰，严守纪律。", "expected_warn": true, "category": "claim_review", "expected_rules": ["dramatic_or_dismissive_framing"], "expected_count": 1}
+{"id": "dismissive_1", "text": "这是唯一正确的方案，其他方案毫无价值。", "expected_warn": true, "category": "claim_review", "expected_rules": ["dramatic_or_dismissive_framing", "dramatic_or_dismissive_framing"], "expected_count": 2}
+{"id": "code_block_1", "text": "```python\n# 这边建议检查输入\nx = '这块的话'\n```", "expected_warn": false, "expected_count": 0, "expected_rules": []}
+{"id": "inline_code_1", "text": "请在配置文件中删除 `这边查到` 这个字段。", "expected_warn": false, "expected_count": 0, "expected_rules": []}
+{"id": "multiclause_allow_and_flag", "text": "桌子在这边；这边建议直接发布。", "expected_warn": true, "category": "style_warning", "expected_rules": ["zhebian_filler"], "expected_count": 1}
+{"id": "astra_probe_1_absolutely", "text": "Absolutely!", "expected_warn": true, "expected_count": 1, "expected_rules": ["en_servile_opener"]}
+{"id": "astra_probe_2_certainly", "text": "Certainly.", "expected_warn": true, "expected_count": 1, "expected_rules": ["en_servile_opener"]}
+{"id": "astra_probe_3_abs_happy", "text": "Absolutely! Happy to help.", "expected_warn": true, "expected_count": 2, "expected_rules": ["en_servile_opener", "en_servile_opener"]}
+{"id": "astra_probe_4_neg_leak", "text": "尚未验证实时接口，但保证安全。", "expected_warn": true, "expected_count": 1, "expected_rules": ["unsupported_guarantee"]}
+{"id": "astra_probe_5_tech_leak", "text": "绝对路径已经检查，保证安全。", "expected_warn": true, "expected_count": 1, "expected_rules": ["unsupported_guarantee"]}
+{"id": "astra_probe_6_unbounded", "text": "所有缺陷已彻底消除。", "expected_warn": true, "expected_count": 1, "expected_rules": ["unbounded_success_claim"]}
+{"id": "astra_probe_7_neg_allow", "text": "不能保证安全。", "expected_warn": false, "expected_count": 0, "expected_rules": []}
+{"id": "astra_probe_8_quoted_critique", "text": "> 原话：“100%安全”。这是不成立的承诺。", "expected_warn": false, "expected_count": 0, "expected_rules": []}
+{"id": "astra_probe_8b_prefixed_quoted_critique", "text": "说明如下；> 原话：“100%安全”。这是不成立的承诺。", "expected_warn": false, "expected_count": 0, "expected_rules": []}
+{"id": "astra_probe_9_tilde_fence", "text": "~~~python\n# 这边建议检查输入\n~~~", "expected_warn": false, "expected_count": 0, "expected_rules": []}
+{"id": "astra_probe_10_finditer_double", "text": "这边建议删除，随后这边建议重试。", "expected_warn": true, "expected_count": 2, "expected_rules": ["zhebian_filler", "zhebian_filler"]}
