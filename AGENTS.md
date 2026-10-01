@@ -19,14 +19,14 @@ Rules of thumb:
 
 # SuperLinear Agent Guide
 
-## Multi-Agent OS Integration (Lite+ v1.0.1)
+## Multi-Agent OS Integration (Lite+ v1.0.1 — AG-first, Codex-gated)
 This repository adopts Multi-Agent OS Lite+ v1.0.1.
 - **Canonical Specification**: [`PROJECT.md`](file:///Users/xiang-yu/Documents/SuperLinear/PROJECT.md)
 - **Authority & Merge Protocol**: [`AGENT_PROTOCOL.md`](file:///Users/xiang-yu/Documents/SuperLinear/AGENT_PROTOCOL.md)
 - **Task Leases & Merge Gates**: [`control/tasks/`](file:///Users/xiang-yu/Documents/SuperLinear/control/tasks/)
 - **Distribution Kit & Tools**: [`multi-agent-os/`](file:///Users/xiang-yu/Documents/SuperLinear/multi-agent-os/)
-- **Builder Role (Codex)**: Write only within authorized task scope and `touched_areas`; do not self-authorize leases, merges, or control-plane changes.
-- **Reviewer Role (AntiGravity)**: Default read-only; perform clean-worktree static SHA reviews using `multi-agent-os/tools/worktree_review.sh`.
+- **Primary Builder (AntiGravity)**: Executes tasks within authorized lease scope and `touched_areas`; runs independent session when acting as reviewer (no self-review in same session).
+- **Gatekeeper & Reviewer (Codex)**: Supervises leases, performs fixed-SHA review, control-plane audits, and merge sign-off recommendations.
 
 ## Project Role
 

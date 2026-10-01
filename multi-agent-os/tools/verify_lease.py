@@ -11,6 +11,7 @@ Validates task lease metadata against the current git diff:
 6. All changed files are subsets of touched_areas.
 7. Risk monotonicity: declared_risk >= computed_minimum_risk based on touched paths and diff size.
 8. Authoritative lease loading from trusted git ref (prevents branch self-authorization).
+9. Metadata validation: writer, granted_by, granted_at, branch.
 """
 
 import sys
@@ -27,6 +28,13 @@ PROTECTED_PATHS = [
     ".github/**", "control/**", "AGENT_PROTOCOL.md", "PROJECT.md", "AGENTS.md",
     "Dockerfile", "docker-compose.yml"
 ]
+
+NON_RUNTIME_EXTENSIONS = {
+    ".md", ".markdown", ".txt", ".rst", ".png", ".jpg", ".jpeg", ".gif", ".svg", ".pdf", ".drawio"
+}
+
+ALLOWED_WRITERS = {"ag", "antigravity", "codex", "muse", "workbuddy"}
+ALLOWED_GRANTORS = {"human", "codex"}
 
 RISK_LEVELS = ["R0", "R1", "R2", "R3"]
 RISK_ORDER = {lvl: idx for idx, lvl in enumerate(RISK_LEVELS)}
@@ -85,6 +93,11 @@ def matches_any(path: str, patterns: list[str]) -> bool:
     return False
 
 
+def is_non_runtime_file(filepath: str) -> bool:
+    _, ext = os.path.splitext(filepath)
+    return ext.lower() in NON_RUNTIME_EXTENSIONS
+
+
 def validate_commit_ref(ref: str, param_name: str) -> str:
     """Validate that ref points to an actual commit object using rev-parse."""
     if not ref or ref.startswith("-"):
@@ -99,13 +112,16 @@ def validate_commit_ref(ref: str, param_name: str) -> str:
 def load_lease_data(task_file: str, lease_ref: str | None, allow_uncommitted: bool) -> tuple[dict, str]:
     """
     Load lease data from trusted git ref or local file.
+    Fail-closed: branch-local files are rejected unless allow_uncommitted=True.
     Returns (meta_dict, source_description).
     """
-    clean_task_file = os.path.relpath(task_file) if not os.path.isabs(task_file) else task_file
+    code_top, top_level, _ = run_git_args(["rev-parse", "--show-toplevel"])
+    if code_top == 0 and top_level:
+        git_path = os.path.relpath(os.path.realpath(task_file), os.path.realpath(top_level)).replace("\\", "/")
+    else:
+        git_path = os.path.relpath(task_file).replace("\\", "/")
 
     if lease_ref:
-        # Load from git ref
-        git_path = clean_task_file.replace("\\", "/")
         code, stdout, stderr = run_git_args(["show", f"{lease_ref}:{git_path}"])
         if code != 0:
             raise ValueError(f"Failed to read task lease '{git_path}' from trusted ref '{lease_ref}': {stderr}")
@@ -116,31 +132,37 @@ def load_lease_data(task_file: str, lease_ref: str | None, allow_uncommitted: bo
             raise ValueError(f"Task file not found: {task_file}")
         with open(task_file, "r", encoding="utf-8") as f:
             content = f.read()
-        return parse_simple_yaml_text(content), f"local file '{task_file}' (--allow-uncommitted-lease)"
+        return parse_simple_yaml_text(content), f"local file '{task_file}' (--allow-uncommitted-lease [TEST-ONLY])"
 
     # Default heuristic: check if origin/main or main has this file
     for candidate_ref in ["origin/main", "main"]:
         code, stdout, _ = run_git_args(["rev-parse", "--verify", "--quiet", candidate_ref])
         if code == 0:
-            git_path = clean_task_file.replace("\\", "/")
             code2, stdout2, _ = run_git_args(["show", f"{candidate_ref}:{git_path}"])
             if code2 == 0:
                 return parse_simple_yaml_text(stdout2), f"authoritative ref '{candidate_ref}:{git_path}'"
 
-    # Fallback to local file with a clear warning
-    if not os.path.isfile(task_file):
-        raise ValueError(f"Task file not found: {task_file}")
-    with open(task_file, "r", encoding="utf-8") as f:
-        content = f.read()
-    return parse_simple_yaml_text(content), f"local file '{task_file}' (unverified branch copy)"
+    # Fail closed: do NOT fall back to uncommitted branch copy
+    raise ValueError(
+        f"Authoritative lease '{git_path}' not found in trusted git refs (checked 'origin/main', 'main').\n"
+        "Branch-local copies cannot self-authorize merges into canonical main (Fail-Closed).\n"
+        "To test locally prior to committing to main, pass --allow-uncommitted-lease."
+    )
 
 
 def verify_lease(task_file: str, target_sha: str = "HEAD", lease_ref: str | None = None, allow_uncommitted: bool = False) -> None:
     print(f"=== Multi-Agent OS v1.0.1 Lease & Merge Gate Verifier ===")
 
     # 1. Load Lease
-    meta, lease_source = load_lease_data(task_file, lease_ref, allow_uncommitted)
+    try:
+        meta, lease_source = load_lease_data(task_file, lease_ref, allow_uncommitted)
+    except ValueError as ve:
+        print(f"[FAIL] {ve}")
+        sys.exit(1)
+
     print(f"Loaded lease from: {lease_source}")
+    if allow_uncommitted:
+        print("[WARN] Running in TEST-ONLY mode (--allow-uncommitted-lease). This check is NOT valid for canonical merge gating.")
 
     # 2. Strict Schema Validation
     missing_fields = [f for f in REQUIRED_FIELDS if f not in meta or meta[f] is None or meta[f] == ""]
@@ -148,17 +170,49 @@ def verify_lease(task_file: str, target_sha: str = "HEAD", lease_ref: str | None
         print(f"[FAIL] Lease schema error: missing required field(s): {', '.join(missing_fields)}")
         sys.exit(1)
 
-    print(f"Task: {meta.get('task')} | Writer: {meta.get('writer')} | Granted By: {meta.get('granted_by')}")
+    # 3. Validate Metadata (Writer, Grantor, Branch)
+    writer = str(meta.get("writer", "")).strip().lower()
+    if writer not in ALLOWED_WRITERS:
+        print(f"[FAIL] Invalid writer: '{writer}'. Allowed: {', '.join(sorted(ALLOWED_WRITERS))}")
+        sys.exit(1)
 
-    # 3. Status check
+    granted_by = str(meta.get("granted_by", "")).strip().lower()
+    if granted_by not in ALLOWED_GRANTORS:
+        print(f"[FAIL] Invalid granted_by: '{granted_by}'. Allowed: {', '.join(sorted(ALLOWED_GRANTORS))}")
+        sys.exit(1)
+
+    branch = str(meta.get("branch", "")).strip()
+    if not branch:
+        print(f"[FAIL] Lease 'branch' cannot be empty")
+        sys.exit(1)
+
+    # Verify branch consistency if on an active branch
+    code_br, cur_branch, _ = run_git_args(["rev-parse", "--abbrev-ref", "HEAD"])
+    if code_br == 0 and cur_branch and cur_branch != "HEAD":
+        if cur_branch != branch:
+            print(f"[WARN] Current branch '{cur_branch}' does not match lease branch '{branch}'")
+
+    print(f"Task: {meta.get('task')} | Writer: {writer} | Granted By: {granted_by} | Branch: {branch}")
+
+    # 4. Status check
     status = str(meta.get("status", "")).strip().upper()
     if status != "ACTIVE":
         print(f"[FAIL] Lease status is not ACTIVE (current: '{status}')")
         sys.exit(1)
     print("✓ Lease status is ACTIVE")
 
-    # 4. Strict Expiration Check (Fail-Closed)
+    # 5. Strict Timestamp Parsing (granted_at & expires_at)
+    granted_at_str = str(meta.get("granted_at", "")).strip()
     expires_at_str = str(meta.get("expires_at", "")).strip()
+    try:
+        granted_dt = datetime.fromisoformat(granted_at_str)
+        if granted_dt.tzinfo is None:
+            print(f"[FAIL] Lease granted_at date '{granted_at_str}' must include timezone (ISO 8601)")
+            sys.exit(1)
+    except Exception as e:
+        print(f"[FAIL] Lease granted_at date parsing failed for '{granted_at_str}': {e}")
+        sys.exit(1)
+
     try:
         exp_dt = datetime.fromisoformat(expires_at_str)
         if exp_dt.tzinfo is None:
@@ -168,19 +222,22 @@ def verify_lease(task_file: str, target_sha: str = "HEAD", lease_ref: str | None
         if now_dt >= exp_dt:
             print(f"[FAIL] Lease expired at {expires_at_str} (current UTC: {now_dt.isoformat()})")
             sys.exit(1)
+        if granted_dt > exp_dt:
+            print(f"[FAIL] Lease granted_at ({granted_at_str}) cannot be later than expires_at ({expires_at_str})")
+            sys.exit(1)
         print(f"✓ Lease is valid until {expires_at_str}")
     except Exception as e:
         print(f"[FAIL] Lease expiration date parsing failed for '{expires_at_str}': {e}")
         sys.exit(1)
 
-    # 5. Risk parsing
+    # 6. Risk parsing
     declared_risk = str(meta.get("declared_risk", "")).strip().upper()
     if declared_risk not in RISK_ORDER:
         print(f"[FAIL] Declared risk '{declared_risk}' is invalid. Allowed: {', '.join(RISK_LEVELS)}")
         sys.exit(1)
     print(f"✓ Declared risk level: {declared_risk}")
 
-    # 6. Validate Commit SHAs
+    # 7. Validate Commit SHAs
     base_sha_raw = str(meta.get("base_sha", "")).strip()
     if base_sha_raw.startswith("000000"):
         print(f"[FAIL] base_sha cannot be a placeholder ('{base_sha_raw}')")
@@ -193,14 +250,14 @@ def verify_lease(task_file: str, target_sha: str = "HEAD", lease_ref: str | None
         print(f"[FAIL] {ve}")
         sys.exit(1)
 
-    # 7. Ancestry check
+    # 8. Ancestry check
     code, _, _ = run_git_args(["merge-base", "--is-ancestor", base_sha_resolved, target_sha_resolved])
     if code != 0:
         print(f"[FAIL] base_sha ({base_sha_resolved[:8]}) is NOT an ancestor of target_sha ({target_sha_resolved[:8]})")
         sys.exit(1)
     print(f"✓ base_sha ({base_sha_resolved[:8]}) is verified ancestor of target_sha ({target_sha_resolved[:8]})")
 
-    # 8. Changed files subset of touched_areas
+    # 9. Changed files subset of touched_areas
     touched_areas = meta.get("touched_areas", [])
     if isinstance(touched_areas, str):
         touched_areas = [touched_areas]
@@ -221,7 +278,7 @@ def verify_lease(task_file: str, target_sha: str = "HEAD", lease_ref: str | None
         sys.exit(1)
     print("✓ All changed files fall within declared touched_areas")
 
-    # 9. Risk Monotonicity & Path Floor Calculation
+    # 10. Risk Monotonicity & Path Floor Calculation
     # Check if protected paths were touched
     protected_violations = [f for f in changed_files if matches_any(f, PROTECTED_PATHS)]
 
@@ -240,7 +297,12 @@ def verify_lease(task_file: str, target_sha: str = "HEAD", lease_ref: str | None
     elif len(changed_files) > 5 or total_lines > 100:
         computed_min_risk = "R2"
     elif len(changed_files) > 0:
-        computed_min_risk = "R1"
+        # Check if purely non-runtime documentation / metadata changes
+        all_non_runtime = all(is_non_runtime_file(f) for f in changed_files)
+        if all_non_runtime:
+            computed_min_risk = "R0"
+        else:
+            computed_min_risk = "R1"
     else:
         computed_min_risk = "R0"
 
@@ -256,7 +318,7 @@ def verify_lease(task_file: str, target_sha: str = "HEAD", lease_ref: str | None
         sys.exit(1)
     print(f"✓ Risk monotonicity satisfied ({declared_risk} >= {computed_min_risk})")
 
-    # 10. Summary
+    # 11. Summary
     print("\n[PASS] All Lease & Physical Diff Gate criteria verified successfully.")
     print("Scope verified: Lease schema, git ancestry, touched_areas subset, diff size, risk monotonicity.")
     print("External gates note: CI execution and peer review records are verified via GitHub Ruleset / Review logs.")
@@ -269,7 +331,7 @@ def main():
     parser.add_argument("task_file", help="Path to task lease YAML file (e.g. control/tasks/T-001.yaml)")
     parser.add_argument("target_sha", nargs="?", default="HEAD", help="Target branch, commit, or revision (default: HEAD)")
     parser.add_argument("--lease-ref", default=None, help="Authoritative git ref to read lease from (e.g. origin/main, main)")
-    parser.add_argument("--allow-uncommitted-lease", action="store_true", help="Allow reading uncommitted local lease file directly")
+    parser.add_argument("--allow-uncommitted-lease", action="store_true", help="Allow reading uncommitted local lease file directly (TEST-ONLY)")
 
     args = parser.parse_args()
     verify_lease(args.task_file, args.target_sha, args.lease_ref, args.allow_uncommitted_lease)

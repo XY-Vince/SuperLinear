@@ -48,7 +48,7 @@ class TestWorktreeReview(unittest.TestCase):
 
     def test_non_worktree_directory_rejected(self):
         # Path inside whitelist prefix, but not a registered worktree
-        fake_dir = "/tmp/agent-review-fake-dir"
+        fake_dir = f"/tmp/agent-review-fake-dir-{os.getpid()}"
         os.makedirs(fake_dir, exist_ok=True)
         try:
             with open(os.path.join(fake_dir, "file.txt"), "w") as f:
@@ -57,6 +57,25 @@ class TestWorktreeReview(unittest.TestCase):
             self.assertEqual(proc.returncode, 1)
             self.assertIn("Refusing to remove", proc.stdout)
             self.assertTrue(os.path.exists(fake_dir))
+        finally:
+            shutil.rmtree(fake_dir, ignore_errors=True)
+
+    def test_non_worktree_with_git_file_not_deleted(self):
+        # P0 regression test: directory contains a .git file but is NOT in git worktree list
+        fake_dir = f"/tmp/agent-review-git-fake-{os.getpid()}"
+        os.makedirs(fake_dir, exist_ok=True)
+        try:
+            with open(os.path.join(fake_dir, ".git"), "w") as f:
+                f.write("gitdir: /fake/path\n")
+            with open(os.path.join(fake_dir, "important.txt"), "w") as f:
+                f.write("DO NOT DELETE THIS DATA\n")
+
+            proc = subprocess.run([WORKTREE_SCRIPT, "clean", fake_dir], cwd=self.test_dir, capture_output=True, text=True)
+            self.assertEqual(proc.returncode, 1)
+            self.assertIn("Refusing to remove", proc.stdout)
+            # Ensure the directory and files were NOT deleted
+            self.assertTrue(os.path.exists(fake_dir))
+            self.assertTrue(os.path.exists(os.path.join(fake_dir, "important.txt")))
         finally:
             shutil.rmtree(fake_dir, ignore_errors=True)
 

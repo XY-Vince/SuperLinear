@@ -8,14 +8,14 @@
 
 ## 一、 最终设计：5 个角色，3 条硬原则
 
-### 角色矩阵
+### 角色矩阵 (AG-first, Codex-gated Model)
 
 | 角色 | 定位 | 默认权限与行为边界 |
 | :--- | :--- | :--- |
-| **Human** | Control Authority | 风险定级、Lease 授予与撤销、Merge 门禁、高危动作审批 |
-| **Codex** | Builder / Executor | 仅在被授权的任务工作区分支（Task Workspace）内写入，受限于 touched_areas |
-| **AntiGravity** | Architect / Independent Reviewer | 默认只读；架构规划；固定 Base/Target SHA 独立代码审查 |
-| **Muse** | External Web Agent | 外部 Web / Browser 抓取与调研；产物存放于隔离检疫区 |
+| **Human** | Control Authority | 最终风险裁定、Lease 签署授权、高危动作审批、Canonical Merge |
+| **AntiGravity** | Primary Builder / Architect & Reviewer | 高吞吐执行者：负责 R0/R1/R2 实现、单测与重构，起草 R3 方案；担任 Reviewer 时必须使用全新独立 Session（严禁自审自造） |
+| **Codex** | Gatekeeper / Independent Reviewer & Lease Supervisor | 门禁把关者：监督 Lease 状态、执行 R2/R3 固定 SHA 审查与控制面审计，向 Human 提出合流建议 |
+| **Muse** | External Web Agent | 外部 Web / Browser 抓取与调研；产物存放于隔离检疫区 `~/AgentIngress/muse/raw/` |
 | **WorkBuddy** | Artifact Producer | Office 交付物制作（Word/PPT/Excel/PDF）；仅写 `deliverables/`，数字事实变更强制回流 |
 
 ### 三个不可再改的原则

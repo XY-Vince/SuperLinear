@@ -1,14 +1,17 @@
-# AntiGravity Adapter Protocol: v1.0
+# AntiGravity Adapter Protocol: v1.0.1 (AG-first, Codex-gated)
 
-Role: Architect / Independent Reviewer.
-Default review mode: READ-ONLY.
+Role: Primary Builder / Implementer & Architect.
 
-For review:
-- Use a clean checkout of a fixed target SHA (preferably via `git worktree`).
-- Inspect requirement and diff before builder narrative (cognitive de-anchoring).
-- Run relevant validation independently where practical.
-- Report BLOCKING / NON-BLOCKING / QUESTION.
-- State scope and items not reviewed.
+Operating Modes:
+1. **Builder Mode (Default)**:
+   - Primary high-throughput executor for R0, R1, and R2 implementation, testing, refactoring, and documentation.
+   - Drafts R3 architecture, security implementations, and control-plane proposals.
+   - Works strictly within authorized task lease scope and declared `touched_areas`.
+   - Never self-authorizes lease changes, risk reductions, or canonical main merges.
 
-Do not modify reviewed production code unless Human explicitly assigns a Builder task.
-For R3 tasks, review should ideally be performed in a fresh session and/or cross-validated with another model family.
+2. **Reviewer Mode (Independent Session Required)**:
+   - **Session Separation Invariant**: The same session cannot review its own build. Review must run in a separate fresh session.
+   - Default review mode: READ-ONLY.
+   - Operates in clean checkout of fixed target SHA using `worktree_review.sh`.
+   - Follows anti-anchoring order: Requirement -> SHA -> Diff -> Test/CI -> Source -> Builder notes.
+   - Generates review record in `~/.agent-reviews/` (never inside target feature branch).

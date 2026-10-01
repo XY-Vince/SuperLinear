@@ -24,16 +24,18 @@ class TestVerifyLease(unittest.TestCase):
         subprocess.run(["git", "config", "user.name", "Test Agent"], cwd=self.test_dir, check=True)
         subprocess.run(["git", "config", "user.email", "agent@example.com"], cwd=self.test_dir, check=True)
 
-        # Create base commit
+        # Create base commit on main
         self.initial_file = os.path.join(self.test_dir, "README.md")
         with open(self.initial_file, "w") as f:
             f.write("# Sample Repo\n")
         subprocess.run(["git", "add", "README.md"], cwd=self.test_dir, check=True)
         subprocess.run(["git", "commit", "-m", "chore: initial commit"], cwd=self.test_dir, check=True)
 
-        # Record base SHA
         res = subprocess.run(["git", "rev-parse", "HEAD"], cwd=self.test_dir, capture_output=True, text=True, check=True)
         self.base_sha = res.stdout.strip()
+
+        # Create feature branch
+        subprocess.run(["git", "checkout", "-b", "feat/test"], cwd=self.test_dir, check=True)
 
         # Create feature commit
         self.feature_file = os.path.join(self.test_dir, "src", "feature.py")
@@ -46,14 +48,16 @@ class TestVerifyLease(unittest.TestCase):
         res2 = subprocess.run(["git", "rev-parse", "HEAD"], cwd=self.test_dir, capture_output=True, text=True, check=True)
         self.target_sha = res2.stdout.strip()
 
+        self.valid_granted = (datetime.now(timezone.utc) - timedelta(hours=1)).isoformat()
         self.valid_expiry = (datetime.now(timezone.utc) + timedelta(days=2)).isoformat()
         self.past_expiry = (datetime.now(timezone.utc) - timedelta(days=2)).isoformat()
 
     def tearDown(self):
         shutil.rmtree(self.test_dir, ignore_errors=True)
 
-    def write_task_file(self, content_dict: dict) -> str:
-        task_path = os.path.join(self.test_dir, "task.yaml")
+    def write_task_file(self, content_dict: dict, rel_path: str = "task.yaml") -> str:
+        task_path = os.path.join(self.test_dir, rel_path)
+        os.makedirs(os.path.dirname(task_path), exist_ok=True)
         lines = []
         for k, v in content_dict.items():
             if isinstance(v, list):
@@ -72,17 +76,17 @@ class TestVerifyLease(unittest.TestCase):
             cmd.extend(extra_args)
         return subprocess.run(cmd, cwd=self.test_dir, capture_output=True, text=True)
 
-    def test_valid_lease_passes(self):
+    def test_valid_lease_passes_with_allow_uncommitted(self):
         task_data = {
             "task": "T-001",
             "status": "ACTIVE",
-            "writer": "codex",
+            "writer": "antigravity",
             "granted_by": "human",
             "branch": "feat/test",
             "base_sha": self.base_sha,
             "touched_areas": ["src/**"],
             "declared_risk": "R1",
-            "granted_at": datetime.now(timezone.utc).isoformat(),
+            "granted_at": self.valid_granted,
             "expires_at": self.valid_expiry
         }
         task_file = self.write_task_file(task_data)
@@ -90,17 +94,64 @@ class TestVerifyLease(unittest.TestCase):
         self.assertEqual(proc.returncode, 0, f"STDOUT: {proc.stdout}\nSTDERR: {proc.stderr}")
         self.assertIn("[PASS]", proc.stdout)
 
+    def test_uncommitted_lease_rejected_by_default(self):
+        # P0 regression test: uncommitted task file without --allow-uncommitted-lease MUST fail closed
+        task_data = {
+            "task": "T-001",
+            "status": "ACTIVE",
+            "writer": "antigravity",
+            "granted_by": "human",
+            "branch": "feat/test",
+            "base_sha": self.base_sha,
+            "touched_areas": ["src/**"],
+            "declared_risk": "R1",
+            "granted_at": self.valid_granted,
+            "expires_at": self.valid_expiry
+        }
+        task_file = self.write_task_file(task_data, "control/tasks/T-001.yaml")
+        # Do not pass --allow-uncommitted-lease
+        proc = self.run_verify(task_file, self.target_sha)
+        self.assertEqual(proc.returncode, 1)
+        self.assertIn("Authoritative lease 'control/tasks/T-001.yaml' not found in trusted git refs", proc.stdout)
+        self.assertIn("Fail-Closed", proc.stdout)
+
+    def test_committed_lease_on_main_passes(self):
+        # Commit lease to main first
+        subprocess.run(["git", "checkout", "main"], cwd=self.test_dir, check=True)
+        task_data = {
+            "task": "T-001",
+            "status": "ACTIVE",
+            "writer": "antigravity",
+            "granted_by": "human",
+            "branch": "feat/test",
+            "base_sha": self.base_sha,
+            "touched_areas": ["src/**"],
+            "declared_risk": "R1",
+            "granted_at": self.valid_granted,
+            "expires_at": self.valid_expiry
+        }
+        task_file = self.write_task_file(task_data, "control/tasks/T-001.yaml")
+        subprocess.run(["git", "add", "control/tasks/T-001.yaml"], cwd=self.test_dir, check=True)
+        subprocess.run(["git", "commit", "-m", "chore: authorize lease T-001"], cwd=self.test_dir, check=True)
+
+        # Return to feature branch and verify
+        subprocess.run(["git", "checkout", "feat/test"], cwd=self.test_dir, check=True)
+        proc = self.run_verify(task_file, self.target_sha)
+        self.assertEqual(proc.returncode, 0, f"STDOUT: {proc.stdout}\nSTDERR: {proc.stderr}")
+        self.assertIn("authoritative ref 'main:control/tasks/T-001.yaml'", proc.stdout)
+        self.assertIn("[PASS]", proc.stdout)
+
     def test_command_injection_rejected(self):
         task_data = {
             "task": "T-001",
             "status": "ACTIVE",
-            "writer": "codex",
+            "writer": "antigravity",
             "granted_by": "human",
             "branch": "feat/test",
             "base_sha": f"{self.base_sha}; touch /tmp/pwned",
             "touched_areas": ["src/**"],
             "declared_risk": "R1",
-            "granted_at": datetime.now(timezone.utc).isoformat(),
+            "granted_at": self.valid_granted,
             "expires_at": self.valid_expiry
         }
         task_file = self.write_task_file(task_data)
@@ -113,7 +164,7 @@ class TestVerifyLease(unittest.TestCase):
         task_data = {
             "task": "T-001",
             # missing status
-            "writer": "codex",
+            "writer": "antigravity",
             "branch": "feat/test",
             "base_sha": self.base_sha,
             "touched_areas": ["src/**"],
@@ -125,11 +176,29 @@ class TestVerifyLease(unittest.TestCase):
         self.assertEqual(proc.returncode, 1)
         self.assertIn("missing required field", proc.stdout)
 
+    def test_invalid_writer_fails(self):
+        task_data = {
+            "task": "T-001",
+            "status": "ACTIVE",
+            "writer": "malicious_bot",
+            "granted_by": "human",
+            "branch": "feat/test",
+            "base_sha": self.base_sha,
+            "touched_areas": ["src/**"],
+            "declared_risk": "R1",
+            "granted_at": self.valid_granted,
+            "expires_at": self.valid_expiry
+        }
+        task_file = self.write_task_file(task_data)
+        proc = self.run_verify(task_file, self.target_sha, ["--allow-uncommitted-lease"])
+        self.assertEqual(proc.returncode, 1)
+        self.assertIn("Invalid writer", proc.stdout)
+
     def test_naive_timezone_fails(self):
         task_data = {
             "task": "T-001",
             "status": "ACTIVE",
-            "writer": "codex",
+            "writer": "antigravity",
             "granted_by": "human",
             "branch": "feat/test",
             "base_sha": self.base_sha,
@@ -147,19 +216,47 @@ class TestVerifyLease(unittest.TestCase):
         task_data = {
             "task": "T-001",
             "status": "ACTIVE",
-            "writer": "codex",
+            "writer": "antigravity",
             "granted_by": "human",
             "branch": "feat/test",
             "base_sha": self.base_sha,
             "touched_areas": ["src/**"],
             "declared_risk": "R1",
-            "granted_at": datetime.now(timezone.utc).isoformat(),
+            "granted_at": self.valid_granted,
             "expires_at": self.past_expiry
         }
         task_file = self.write_task_file(task_data)
         proc = self.run_verify(task_file, self.target_sha, ["--allow-uncommitted-lease"])
         self.assertEqual(proc.returncode, 1)
         self.assertIn("Lease expired at", proc.stdout)
+
+    def test_r0_pure_docs_allowed(self):
+        # Commit purely modifying a markdown documentation file
+        doc_file = os.path.join(self.test_dir, "docs", "guide.md")
+        os.makedirs(os.path.dirname(doc_file), exist_ok=True)
+        with open(doc_file, "w") as f:
+            f.write("# Guide\nSome doc update.\n")
+        subprocess.run(["git", "add", "docs/guide.md"], cwd=self.test_dir, check=True)
+        subprocess.run(["git", "commit", "-m", "docs: update guide"], cwd=self.test_dir, check=True)
+        target_sha = subprocess.run(["git", "rev-parse", "HEAD"], cwd=self.test_dir, capture_output=True, text=True).stdout.strip()
+
+        task_data = {
+            "task": "T-DOC",
+            "status": "ACTIVE",
+            "writer": "antigravity",
+            "granted_by": "human",
+            "branch": "feat/test",
+            "base_sha": self.target_sha,  # diff is just docs/guide.md
+            "touched_areas": ["docs/**"],
+            "declared_risk": "R0",
+            "granted_at": self.valid_granted,
+            "expires_at": self.valid_expiry
+        }
+        task_file = self.write_task_file(task_data)
+        proc = self.run_verify(task_file, target_sha, ["--allow-uncommitted-lease"])
+        self.assertEqual(proc.returncode, 0, f"STDOUT: {proc.stdout}\nSTDERR: {proc.stderr}")
+        self.assertIn("Computed minimum risk based on diff: R0", proc.stdout)
+        self.assertIn("[PASS]", proc.stdout)
 
     def test_r0_touching_protected_path_fails(self):
         # Create commit modifying AGENTS.md (protected path)
@@ -173,13 +270,13 @@ class TestVerifyLease(unittest.TestCase):
         task_data = {
             "task": "T-002",
             "status": "ACTIVE",
-            "writer": "codex",
+            "writer": "antigravity",
             "granted_by": "human",
             "branch": "feat/test",
             "base_sha": self.base_sha,
             "touched_areas": ["src/**", "AGENTS.md"],
             "declared_risk": "R0",  # Declaring R0 for protected path change!
-            "granted_at": datetime.now(timezone.utc).isoformat(),
+            "granted_at": self.valid_granted,
             "expires_at": self.valid_expiry
         }
         task_file = self.write_task_file(task_data)
@@ -201,13 +298,13 @@ class TestVerifyLease(unittest.TestCase):
         task_data = {
             "task": "T-003",
             "status": "ACTIVE",
-            "writer": "codex",
+            "writer": "antigravity",
             "granted_by": "human",
             "branch": "feat/test",
             "base_sha": self.base_sha,
             "touched_areas": ["src/**"],
             "declared_risk": "R1",  # R1 limited to 100 lines
-            "granted_at": datetime.now(timezone.utc).isoformat(),
+            "granted_at": self.valid_granted,
             "expires_at": self.valid_expiry
         }
         task_file = self.write_task_file(task_data)
@@ -220,13 +317,13 @@ class TestVerifyLease(unittest.TestCase):
         task_data = {
             "task": "T-004",
             "status": "ACTIVE",
-            "writer": "codex",
+            "writer": "antigravity",
             "granted_by": "human",
             "branch": "feat/test",
             "base_sha": self.base_sha,
             "touched_areas": ["docs/**"],  # But feature.py is in src/**
             "declared_risk": "R1",
-            "granted_at": datetime.now(timezone.utc).isoformat(),
+            "granted_at": self.valid_granted,
             "expires_at": self.valid_expiry
         }
         task_file = self.write_task_file(task_data)

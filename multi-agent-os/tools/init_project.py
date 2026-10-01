@@ -31,7 +31,32 @@ def run_init(mode: str, target_dir: str, dry_run: bool = False) -> None:
 
     print(f"=== Multi-Agent OS v{VERSION} Project Initializer [{mode.upper()}] ===")
     print(f"Target Directory: {target_dir}")
+    print(f"Base Distribution: {base_dir}")
     print(f"Dry Run: {dry_run}\n")
+
+    # Core files to install
+    files_to_copy = [
+        ("core/PROJECT.md", "PROJECT.md"),
+        ("core/AGENT_PROTOCOL.md", "AGENT_PROTOCOL.md"),
+        ("adapters/codex/AGENTS.md", "AGENTS.md"),
+        ("control/tasks/T-000-template.yaml", "control/tasks/T-000-template.yaml"),
+        ("control/tasks/README.md", "control/tasks/README.md"),
+    ]
+
+    # Pre-flight check: Fail-Closed if any required template source is missing
+    missing_sources = []
+    for src_rel, _ in files_to_copy:
+        src = os.path.join(base_dir, src_rel)
+        if not os.path.exists(src):
+            missing_sources.append(src_rel)
+
+    if missing_sources:
+        print(f"[FAIL] Incomplete distribution: missing required template source file(s):")
+        for m in missing_sources:
+            print(f"  - {m}")
+        print(f"\nExpected distribution location: {base_dir}")
+        print("Installation requires the complete package (including core/, adapters/, control/).")
+        sys.exit(1)
 
     manifest = {
         "version": VERSION,
@@ -46,22 +71,9 @@ def run_init(mode: str, target_dir: str, dry_run: bool = False) -> None:
     if not dry_run:
         os.makedirs(target_dir, exist_ok=True)
 
-    # Core files to install
-    files_to_copy = [
-        ("core/PROJECT.md", "PROJECT.md"),
-        ("core/AGENT_PROTOCOL.md", "AGENT_PROTOCOL.md"),
-        ("adapters/codex/AGENTS.md", "AGENTS.md"),
-        ("control/tasks/T-000-template.yaml", "control/tasks/T-000-template.yaml"),
-        ("control/tasks/README.md", "control/tasks/README.md"),
-    ]
-
     for src_rel, dst_rel in files_to_copy:
         src = os.path.join(base_dir, src_rel)
         dst = os.path.join(target_dir, dst_rel)
-
-        if not os.path.exists(src):
-            print(f"[WARN] Template source not found: {src_rel}")
-            continue
 
         if os.path.exists(dst):
             manifest["existing_files"].append(dst_rel)
@@ -70,13 +82,14 @@ def run_init(mode: str, target_dir: str, dry_run: bool = False) -> None:
                 suggestion_rel = "AGENTS.md.merge-suggestion"
                 suggestion_dst = os.path.join(target_dir, suggestion_rel)
                 suggestion_content = (
-                    "<!-- Multi-Agent OS Lite+ Integration Suggestion -->\n"
+                    "<!-- Multi-Agent OS Lite+ Integration Suggestion (AG-first, Codex-gated) -->\n"
                     "# Multi-Agent OS Integration\n"
                     "This project adopts Multi-Agent OS Lite+ v1.0.1.\n"
                     "- Specification: PROJECT.md\n"
                     "- Protocol & Merge Authority: AGENT_PROTOCOL.md\n"
                     "- Task Leases & Merge Gates: control/tasks/\n"
-                    "- Builder: Follow task scope and touched areas; do not self-authorize merges.\n\n"
+                    "- Primary Builder (AG): High-throughput execution within task scope & touched areas.\n"
+                    "- Independent Gatekeeper (Codex): Lease verification, fixed-SHA review, merge sign-off.\n\n"
                 )
                 print(f"[ADOPT] Existing AGENTS.md detected. Generating merge suggestion: {suggestion_rel}")
                 if not dry_run:
@@ -91,6 +104,10 @@ def run_init(mode: str, target_dir: str, dry_run: bool = False) -> None:
             if not dry_run:
                 os.makedirs(os.path.dirname(dst), exist_ok=True)
                 shutil.copy(src, dst)
+
+    if mode == "new" and len(manifest["created_files"]) == 0 and not dry_run:
+        print("[FAIL] No files were created for new project.")
+        sys.exit(1)
 
     manifest_file = os.path.join(target_dir, ".agent-os-manifest.json")
     if not dry_run:

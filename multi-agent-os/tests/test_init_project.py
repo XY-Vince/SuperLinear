@@ -73,6 +73,22 @@ class TestInitProject(unittest.TestCase):
         with open(suggestion_file, "r") as f:
             content = f.read()
         self.assertIn("Multi-Agent OS Integration", content)
+        self.assertIn("Primary Builder (AG)", content)
+
+    def test_missing_templates_fails_closed(self):
+        # P0 regression test: running init_project from an isolated dir missing core/ / adapters/
+        isolated_tools_dir = os.path.join(self.test_dir, "isolated_tools")
+        os.makedirs(isolated_tools_dir, exist_ok=True)
+        isolated_script = os.path.join(isolated_tools_dir, "init_project.py")
+        shutil.copy(INIT_SCRIPT, isolated_script)
+
+        target = os.path.join(self.test_dir, "failed_project")
+        proc = subprocess.run([sys.executable, isolated_script, "new", target], capture_output=True, text=True)
+        self.assertEqual(proc.returncode, 1)
+        self.assertIn("Incomplete distribution", proc.stdout)
+        self.assertIn("missing required template source file", proc.stdout)
+        # Verify no partial files or manifest created
+        self.assertFalse(os.path.exists(target))
 
 
 if __name__ == "__main__":

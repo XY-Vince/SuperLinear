@@ -1,13 +1,13 @@
 task: T-000
 status: ACTIVE # Options: ACTIVE, COMPLETED, REVOKED, EXPIRED
-writer: codex
-granted_by: human
+writer: antigravity # Options: antigravity (default builder), codex, muse, workbuddy
+granted_by: human # Options: human (control authority), codex (governance gatekeeper)
 branch: feat/T-000-example
 base_sha: 0000000000000000000000000000000000000000
 touched_areas:
   - src/example/**
   - tests/example/**
 declared_risk: R1 # Options: R0, R1, R2, R3
-granted_at: "2026-09-30T15:00:00-04:00"
-expires_at: "2026-10-02T15:00:00-04:00"
+granted_at: "2026-10-01T15:00:00-04:00"
+expires_at: "2026-10-03T15:00:00-04:00"
 description: "Example task description and scope."

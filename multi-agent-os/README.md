@@ -25,8 +25,8 @@ multi-agent-os-v1.0/
 │   └── PROJECT.md                 # 项目规格说明书标准模板
 │
 ├── adapters/                      # 角色适配器规范 (Control Plane Assets)
-│   ├── codex/AGENTS.md            # Codex 适配器协议 (Builder / Executor)
-│   ├── antigravity/adapter.md     # AntiGravity 适配器协议 (Architect / Reviewer)
+│   ├── antigravity/adapter.md     # AntiGravity 适配器协议 (Primary Builder / Architect & Reviewer)
+│   ├── codex/AGENTS.md            # Codex 适配器协议 (Gatekeeper / Reviewer & Lease Supervisor)
 │   ├── muse/adapter.md            # Muse 适配器协议 (External Web / Research)
 │   ├── workbuddy/adapter.md       # WorkBuddy 适配器协议 (Office Artifacts)
 │   └── global/GLOBAL_AGENTS.md    # 全局 NCS Protocol v1.2 与通信风格

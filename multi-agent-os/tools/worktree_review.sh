@@ -15,6 +15,10 @@ usage() {
     echo "    - /tmp/agent-review-* (or /private/tmp/agent-review-* on macOS)"
     echo "    - /tmp/agent-reviews/* (or /private/tmp/agent-reviews/* on macOS)"
     echo "    - ~/.agent-reviews/worktrees/*"
+    echo ""
+    echo "Safety invariant:"
+    echo "  This tool strictly uses 'git worktree remove'. It NEVER executes fallback 'rm -rf'."
+    echo "  Any directory not registered in 'git worktree list' will be rejected with an error."
 }
 
 if [ $# -lt 1 ]; then
@@ -59,7 +63,7 @@ SAFE_PREFIX_1="${CANON_TMP}/agent-review-"
 SAFE_PREFIX_2="${CANON_TMP}/agent-reviews/"
 SAFE_PREFIX_3="$(python3 -c "import os; print(os.path.realpath(os.path.expanduser('~/.agent-reviews/worktrees')))")/"
 
-# Also support raw /tmp prefixes before symlink resolution
+# Also support raw prefixes
 RAW_PREFIX_1="/tmp/agent-review-"
 RAW_PREFIX_2="/tmp/agent-reviews/"
 RAW_PREFIX_3="${HOME}/.agent-reviews/worktrees/"
@@ -80,8 +84,9 @@ fi
 # Helper function to check if directory is registered in git worktree list
 is_registered_worktree() {
     local target="$1"
-    # Match exact line 'worktree <path>'
-    git worktree list --porcelain | grep -E "^worktree (${target}|$(python3 -c "import os, sys; print(os.path.realpath(sys.argv[1]))" "$target"))$" >/dev/null 2>&1
+    local canon_target
+    canon_target="$(python3 -c "import os, sys; print(os.path.realpath(sys.argv[1]))" "$target")"
+    git worktree list --porcelain | grep -E "^worktree (${target}|${canon_target})$" >/dev/null 2>&1
 }
 
 case "$ACTION" in
@@ -98,16 +103,10 @@ case "$ACTION" in
         if [ -d "$RESOLVED_DIR" ]; then
             if is_registered_worktree "$RESOLVED_DIR"; then
                 echo "Removing previously registered worktree at $RESOLVED_DIR..."
-                git worktree remove --force "$RESOLVED_DIR" >/dev/null 2>&1 || true
-            fi
-            if [ -d "$RESOLVED_DIR" ]; then
-                # Safe fallback cleanup: only if it contains .git file (worktree marker)
-                if [ -f "$RESOLVED_DIR/.git" ]; then
-                    rm -rf "$RESOLVED_DIR"
-                else
-                    echo "[FAIL] Existing directory '$RESOLVED_DIR' is not a git worktree. Aborting."
-                    exit 1
-                fi
+                git worktree remove --force "$RESOLVED_DIR"
+            else
+                echo "[FAIL] Refusing to overwrite '$RESOLVED_DIR': directory exists but is not a registered git worktree in this repository. Aborting to protect existing files."
+                exit 1
             fi
         fi
 
@@ -131,13 +130,8 @@ case "$ACTION" in
         if is_registered_worktree "$RESOLVED_DIR"; then
             git worktree remove --force "$RESOLVED_DIR"
             echo "✓ Registered git worktree removed successfully."
-        elif [ -f "$RESOLVED_DIR/.git" ]; then
-            # Detached leftover worktree with .git file
-            rm -rf "$RESOLVED_DIR"
-            git worktree prune >/dev/null 2>&1 || true
-            echo "✓ Leftover worktree files cleaned up."
         else
-            echo "[FAIL] Refusing to remove '$RESOLVED_DIR': directory exists but is neither a registered git worktree nor a valid worktree checkout."
+            echo "[FAIL] Refusing to remove '$RESOLVED_DIR': directory exists but is not a registered git worktree in this repository."
             exit 1
         fi
         ;;

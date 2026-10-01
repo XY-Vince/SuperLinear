@@ -145,11 +145,12 @@ Human approval is required before:
 - production deployment
 - destructive data operations
 
-## Roles
-- **Codex**: Builder and primary executor.
-- **AntiGravity**: Architect and independent reviewer. Default review mode is read-only.
-- **Muse**: External web research and browser-execution agent. Raw output is untrusted.
-- **WorkBuddy**: Office-artifact and presentation producer. It reads canonical semantic sources and writes deliverables rather than canonical project logic.
+## Roles (AG-first, Codex-gated Architecture)
+- **AntiGravity (AG)**: Primary high-throughput builder, implementer, and architect. Executes R0, R1, R2 tasks; drafts R3 implementations and documentation. When serving as reviewer, must operate in an independent session (self-review within the same session is strictly prohibited).
+- **Codex**: Independent gatekeeper, control-plane reviewer, and task lease supervisor. Performs fixed-SHA verification for R2, comprehensive review for R3/control-plane changes, and recommends merge to Human.
+- **Muse**: External web research and browser-execution agent. Raw output remains in external quarantine.
+- **WorkBuddy**: Office-artifact and presentation producer (Word, PPT, Excel, PDF). Reads canonical semantic sources provided by AG; writes deliverables; high-risk fact changes are spot-checked by Codex/Human.
+- **Human**: Ultimate authority for task authorization, lease signing, R3 risk approval, and canonical branch merge.
 
 ## Control Plane
 The following are control-plane assets:
