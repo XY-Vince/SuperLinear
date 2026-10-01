@@ -19,6 +19,15 @@ Rules of thumb:
 
 # SuperLinear Agent Guide
 
+## Multi-Agent OS Integration (Lite+ v1.0.1)
+This repository adopts Multi-Agent OS Lite+ v1.0.1.
+- **Canonical Specification**: [`PROJECT.md`](file:///Users/xiang-yu/Documents/SuperLinear/PROJECT.md)
+- **Authority & Merge Protocol**: [`AGENT_PROTOCOL.md`](file:///Users/xiang-yu/Documents/SuperLinear/AGENT_PROTOCOL.md)
+- **Task Leases & Merge Gates**: [`control/tasks/`](file:///Users/xiang-yu/Documents/SuperLinear/control/tasks/)
+- **Distribution Kit & Tools**: [`multi-agent-os/`](file:///Users/xiang-yu/Documents/SuperLinear/multi-agent-os/)
+- **Builder Role (Codex)**: Write only within authorized task scope and `touched_areas`; do not self-authorize leases, merges, or control-plane changes.
+- **Reviewer Role (AntiGravity)**: Default read-only; perform clean-worktree static SHA reviews using `multi-agent-os/tools/worktree_review.sh`.
+
 ## Project Role
 
 Use this repository as a private coordination workspace for Codex, ChatGPT planning, reusable skills, and project-specific agent rules. Treat GitHub as the shared source of truth once a remote is configured.
@@ -88,6 +97,7 @@ This repository currently contains agent configuration and the `whoami` skill ra
 python3 .codex/skills/whoami/scripts/validate_skill_data.py --answers .codex/skills/whoami/references/answers.sample.json
 python3 .codex/skills/whoami/scripts/generate_identity.py --answers .codex/skills/whoami/references/answers.sample.json --out /tmp/whoami-profile-smoke.md
 python3 NCS/tests/test_lint.py
+python3 -m unittest discover -s multi-agent-os/tests -p "test_*.py"
 ```
 
 If Python scripts change, also compile them with pycache output outside `.codex`:
