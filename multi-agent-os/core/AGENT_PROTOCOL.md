@@ -1,5 +1,5 @@
 # Multi-Agent Protocol
-protocol_version: 1.0
+protocol_version: 1.0.1
 
 ## Authority
 Human controls:

@@ -1,6 +1,6 @@
-# Multi-Agent OS v1.0 Final — Distribution Kit
+# Multi-Agent OS v1.0.1 Final — Distribution Kit (SuperLinear Hardened)
 
-一套面向 Human + 4-Agent（Codex, AntiGravity, Muse, WorkBuddy）的高可靠人机协作操作系统架构与工具包。
+一套面向 Human + 4-Agent（AntiGravity, Codex, Muse, WorkBuddy）的高可靠人机协作操作系统架构与工具包（AG-first, Codex-gated）。
 
 ---
 
@@ -60,11 +60,19 @@ multi-agent-os-v1.0/
 
 - **阅读完整架构**：参见 [`SPEC_V1_FINAL.md`](SPEC_V1_FINAL.md)。
 - **在新电脑上配置**：参见 [`MIGRATION_SETUP_GUIDE.md`](MIGRATION_SETUP_GUIDE.md)。
-- **新建项目**：
+- **新建项目 (Day-0 Bootstrap)**：
   ```bash
-  python3 tools/init_project.py <new-repo-path>
+  python3 tools/init_project.py new <new-repo-path>
   ```
-- **验证 Lease**：
+- **存量项目接入 (Lite+ Adopt)**：
   ```bash
-  python3 tools/verify_lease.py <path/to/T-xxx.yaml> HEAD
+  python3 tools/init_project.py adopt <existing-repo-path>
+  ```
+- **验证 Lease 与物理门禁**：
+  ```bash
+  python3 tools/verify_lease.py control/tasks/T-xxx.yaml HEAD
+  ```
+- **开启隔离审查工作树**：
+  ```bash
+  tools/worktree_review.sh start <target_sha> /tmp/agent-review-<task>
   ```

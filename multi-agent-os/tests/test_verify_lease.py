@@ -49,6 +49,7 @@ class TestVerifyLease(unittest.TestCase):
         self.target_sha = res2.stdout.strip()
 
         self.valid_granted = (datetime.now(timezone.utc) - timedelta(hours=1)).isoformat()
+        self.future_granted = (datetime.now(timezone.utc) + timedelta(hours=2)).isoformat()
         self.valid_expiry = (datetime.now(timezone.utc) + timedelta(days=2)).isoformat()
         self.past_expiry = (datetime.now(timezone.utc) - timedelta(days=2)).isoformat()
 
@@ -140,6 +141,63 @@ class TestVerifyLease(unittest.TestCase):
         self.assertEqual(proc.returncode, 0, f"STDOUT: {proc.stdout}\nSTDERR: {proc.stderr}")
         self.assertIn("authoritative ref 'main:control/tasks/T-001.yaml'", proc.stdout)
         self.assertIn("[PASS]", proc.stdout)
+
+    def test_codex_cannot_grant_lease(self):
+        # Sol P1 audit: Only human may grant leases per AGENT_PROTOCOL.md
+        task_data = {
+            "task": "T-001",
+            "status": "ACTIVE",
+            "writer": "antigravity",
+            "granted_by": "codex",  # Unauthorized grantor
+            "branch": "feat/test",
+            "base_sha": self.base_sha,
+            "touched_areas": ["src/**"],
+            "declared_risk": "R1",
+            "granted_at": self.valid_granted,
+            "expires_at": self.valid_expiry
+        }
+        task_file = self.write_task_file(task_data)
+        proc = self.run_verify(task_file, self.target_sha, ["--allow-uncommitted-lease"])
+        self.assertEqual(proc.returncode, 1)
+        self.assertIn("Only 'human' possesses lease authorization authority", proc.stdout)
+
+    def test_branch_mismatch_fails_closed(self):
+        # Sol P1 audit: Active branch mismatch must fail closed
+        task_data = {
+            "task": "T-001",
+            "status": "ACTIVE",
+            "writer": "antigravity",
+            "granted_by": "human",
+            "branch": "feat/other-branch",  # Mismatch with feat/test
+            "base_sha": self.base_sha,
+            "touched_areas": ["src/**"],
+            "declared_risk": "R1",
+            "granted_at": self.valid_granted,
+            "expires_at": self.valid_expiry
+        }
+        task_file = self.write_task_file(task_data)
+        proc = self.run_verify(task_file, self.target_sha, ["--allow-uncommitted-lease"])
+        self.assertEqual(proc.returncode, 1)
+        self.assertIn("Branch mismatch: active git branch 'feat/test' does not match lease branch 'feat/other-branch'", proc.stdout)
+
+    def test_future_granted_at_fails_closed(self):
+        # Sol audit: granted_at in the future must fail closed
+        task_data = {
+            "task": "T-001",
+            "status": "ACTIVE",
+            "writer": "antigravity",
+            "granted_by": "human",
+            "branch": "feat/test",
+            "base_sha": self.base_sha,
+            "touched_areas": ["src/**"],
+            "declared_risk": "R1",
+            "granted_at": self.future_granted,  # Future grant
+            "expires_at": self.valid_expiry
+        }
+        task_file = self.write_task_file(task_data)
+        proc = self.run_verify(task_file, self.target_sha, ["--allow-uncommitted-lease"])
+        self.assertEqual(proc.returncode, 1)
+        self.assertIn("Lease is not yet active: granted_at", proc.stdout)
 
     def test_command_injection_rejected(self):
         task_data = {
@@ -276,6 +334,34 @@ class TestVerifyLease(unittest.TestCase):
             "base_sha": self.base_sha,
             "touched_areas": ["src/**", "AGENTS.md"],
             "declared_risk": "R0",  # Declaring R0 for protected path change!
+            "granted_at": self.valid_granted,
+            "expires_at": self.valid_expiry
+        }
+        task_file = self.write_task_file(task_data)
+        proc = self.run_verify(task_file, target_sha, ["--allow-uncommitted-lease"])
+        self.assertEqual(proc.returncode, 1)
+        self.assertIn("Risk Monotonicity Violation", proc.stdout)
+        self.assertIn("Touched protected path(s) requiring R3", proc.stdout)
+
+    def test_control_plane_skill_or_adapter_enforces_r3(self):
+        # Sol P1 audit: .agents/** and multi-agent-os/adapters/** MUST enforce R3
+        skill_file = os.path.join(self.test_dir, ".agents", "skills", "my-skill", "SKILL.md")
+        os.makedirs(os.path.dirname(skill_file), exist_ok=True)
+        with open(skill_file, "w") as f:
+            f.write("# Custom Agent Skill\n")
+        subprocess.run(["git", "add", "."], cwd=self.test_dir, check=True)
+        subprocess.run(["git", "commit", "-m", "feat: add agent skill"], cwd=self.test_dir, check=True)
+        target_sha = subprocess.run(["git", "rev-parse", "HEAD"], cwd=self.test_dir, capture_output=True, text=True).stdout.strip()
+
+        task_data = {
+            "task": "T-SKILL",
+            "status": "ACTIVE",
+            "writer": "antigravity",
+            "granted_by": "human",
+            "branch": "feat/test",
+            "base_sha": self.base_sha,
+            "touched_areas": ["src/**", ".agents/**"],
+            "declared_risk": "R0",  # Declaring R0 for skill markdown change!
             "granted_at": self.valid_granted,
             "expires_at": self.valid_expiry
         }

@@ -1,8 +1,8 @@
 # Multi-Agent OS v1.0 Final — Architecture & Specification
 
-> **Status**: Frozen / Final v1.0  
-> **Authority**: Human Control  
-> **Source**: Unified synthesis of Astra architecture & Sonnet enforcement review  
+> **Status**: Frozen / Final v1.0
+> **Authority**: Human Control
+> **Source**: Unified synthesis of Astra architecture & Sonnet enforcement review
 
 ---
 
@@ -20,11 +20,11 @@
 
 ### 三个不可再改的原则
 
-1. **Canonical truth lives in protected state, not in agents.**  
+1. **Canonical truth lives in protected state, not in agents.**
    （规范真理存在于受保护的主分支状态中，而非存在于 Agent 的记忆或会话中。）
-2. **Agents may work freely; only validated state may enter canonical main.**  
+2. **Agents may work freely; only validated state may enter canonical main.**
    （Agent 可在隔离任务分支中自由试错；只有经过验证的状态才被允许合入规范主分支。）
-3. **Human controls consequential gates, not every keystroke.**  
+3. **Human controls consequential gates, not every keystroke.**
    （人类掌控决定性关口与门禁，而非监视 Agent 的每一次击键。）
 
 ---
@@ -39,7 +39,7 @@
 6. **Agent-produced summaries**（Agent 生成的阶段性总结）
 7. **Chat history / persistent memory**（会话历史与持久化模型记忆）
 
-> **冲突裁决准则**：低层级与高层级冲突时，高层级无条件优先。  
+> **冲突裁决准则**：低层级与高层级冲突时，高层级无条件优先。
 > 因此：“Gemini remembers…”、“Codex said last week…”、“Muse previously found…” 均不是权威证据。
 
 ---
@@ -60,8 +60,9 @@
   ```yaml
   task: T-014
   status: ACTIVE
-  writer: codex
-  granted_by: human
+  writer: antigravity # Primary builder in AG-first architecture
+  granted_by: human # Human authority only
+  reviewed_by: codex # Independent gatekeeper & reviewer
   branch: feat/T-014-cache
   base_sha: 62ca419
   touched_areas:

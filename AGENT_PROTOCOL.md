@@ -1,7 +1,7 @@
 <!--
 Multi-Agent Protocol Instance: SuperLinear
 Upstream-Template: multi-agent-os/core/AGENT_PROTOCOL.md@v1.0.1
-Upstream-SHA256: 5ee7dc59781c4bca48314677a2f6e1022c086910b80b18bac748843056237d6f
+Upstream-SHA256: 937a096e0b268f1fcf97fd142cdff31098234f44f9957a7bb31d0db3c598e7b1
 Adopted-Date: 2026-10-01
 -->
 

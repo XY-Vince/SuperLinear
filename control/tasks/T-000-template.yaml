@@ -1,7 +1,8 @@
 task: T-000
 status: ACTIVE # Options: ACTIVE, COMPLETED, REVOKED, EXPIRED
 writer: antigravity # Options: antigravity (default builder), codex, muse, workbuddy
-granted_by: human # Options: human (control authority), codex (governance gatekeeper)
+granted_by: human # Human authority only per AGENT_PROTOCOL.md
+reviewed_by: codex # Options: codex (gatekeeper), independent-reviewer
 branch: feat/T-000-example
 base_sha: 0000000000000000000000000000000000000000
 touched_areas:

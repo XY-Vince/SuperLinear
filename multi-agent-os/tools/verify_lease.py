@@ -6,12 +6,15 @@ Validates task lease metadata against the current git diff:
 1. Strict schema compliance (all required fields present and valid).
 2. Status is ACTIVE.
 3. Expiration date is valid ISO 8601 with timezone and has not expired.
-4. base_sha and target_sha are valid git commit objects.
-5. base_sha is an ancestor of target_sha.
-6. All changed files are subsets of touched_areas.
-7. Risk monotonicity: declared_risk >= computed_minimum_risk based on touched paths and diff size.
-8. Authoritative lease loading from trusted git ref (prevents branch self-authorization).
-9. Metadata validation: writer, granted_by, granted_at, branch.
+4. granted_at is valid ISO 8601 with timezone and <= now < expires_at.
+5. granted_by is strictly 'human' (Human Control Authority).
+6. branch strictly matches active branch or target_sha belongs to declared branch ref.
+7. base_sha and target_sha are valid git commit objects.
+8. base_sha is an ancestor of target_sha.
+9. All changed files are subsets of touched_areas.
+10. Risk monotonicity: declared_risk >= computed_minimum_risk based on touched paths and diff size.
+11. Control-plane assets (.agents, .codex, multi-agent-os) are protected and enforce R3.
+12. Authoritative lease loading from trusted git ref (prevents branch self-authorization).
 """
 
 import sys
@@ -26,7 +29,10 @@ PROTECTED_PATHS = [
     "auth/**", "security/**", "migrations/**", "schema/**",
     "package.json", "package-lock.json", "poetry.lock", "Cargo.lock", "requirements.txt",
     ".github/**", "control/**", "AGENT_PROTOCOL.md", "PROJECT.md", "AGENTS.md",
-    "Dockerfile", "docker-compose.yml"
+    "Dockerfile", "docker-compose.yml",
+    ".agents/**", ".codex/**",
+    "multi-agent-os/core/**", "multi-agent-os/adapters/**", "multi-agent-os/tools/**",
+    "multi-agent-os/SPEC_V1_FINAL.md", "multi-agent-os/MIGRATION_SETUP_GUIDE.md"
 ]
 
 NON_RUNTIME_EXTENSIONS = {
@@ -34,7 +40,7 @@ NON_RUNTIME_EXTENSIONS = {
 }
 
 ALLOWED_WRITERS = {"ag", "antigravity", "codex", "muse", "workbuddy"}
-ALLOWED_GRANTORS = {"human", "codex"}
+ALLOWED_GRANTORS = {"human"}
 
 RISK_LEVELS = ["R0", "R1", "R2", "R3"]
 RISK_ORDER = {lvl: idx for idx, lvl in enumerate(RISK_LEVELS)}
@@ -94,6 +100,9 @@ def matches_any(path: str, patterns: list[str]) -> bool:
 
 
 def is_non_runtime_file(filepath: str) -> bool:
+    # Any control plane or protected path file is NEVER a benign non-runtime file
+    if matches_any(filepath, PROTECTED_PATHS):
+        return False
     _, ext = os.path.splitext(filepath)
     return ext.lower() in NON_RUNTIME_EXTENSIONS
 
@@ -178,19 +187,13 @@ def verify_lease(task_file: str, target_sha: str = "HEAD", lease_ref: str | None
 
     granted_by = str(meta.get("granted_by", "")).strip().lower()
     if granted_by not in ALLOWED_GRANTORS:
-        print(f"[FAIL] Invalid granted_by: '{granted_by}'. Allowed: {', '.join(sorted(ALLOWED_GRANTORS))}")
+        print(f"[FAIL] Invalid granted_by: '{granted_by}'. Only 'human' possesses lease authorization authority per AGENT_PROTOCOL.md.")
         sys.exit(1)
 
     branch = str(meta.get("branch", "")).strip()
     if not branch:
         print(f"[FAIL] Lease 'branch' cannot be empty")
         sys.exit(1)
-
-    # Verify branch consistency if on an active branch
-    code_br, cur_branch, _ = run_git_args(["rev-parse", "--abbrev-ref", "HEAD"])
-    if code_br == 0 and cur_branch and cur_branch != "HEAD":
-        if cur_branch != branch:
-            print(f"[WARN] Current branch '{cur_branch}' does not match lease branch '{branch}'")
 
     print(f"Task: {meta.get('task')} | Writer: {writer} | Granted By: {granted_by} | Branch: {branch}")
 
@@ -202,12 +205,17 @@ def verify_lease(task_file: str, target_sha: str = "HEAD", lease_ref: str | None
     print("✓ Lease status is ACTIVE")
 
     # 5. Strict Timestamp Parsing (granted_at & expires_at)
+    now_dt = datetime.now(timezone.utc)
     granted_at_str = str(meta.get("granted_at", "")).strip()
     expires_at_str = str(meta.get("expires_at", "")).strip()
+
     try:
         granted_dt = datetime.fromisoformat(granted_at_str)
         if granted_dt.tzinfo is None:
             print(f"[FAIL] Lease granted_at date '{granted_at_str}' must include timezone (ISO 8601)")
+            sys.exit(1)
+        if granted_dt > now_dt:
+            print(f"[FAIL] Lease is not yet active: granted_at ({granted_at_str}) is in the future (current UTC: {now_dt.isoformat()})")
             sys.exit(1)
     except Exception as e:
         print(f"[FAIL] Lease granted_at date parsing failed for '{granted_at_str}': {e}")
@@ -218,14 +226,13 @@ def verify_lease(task_file: str, target_sha: str = "HEAD", lease_ref: str | None
         if exp_dt.tzinfo is None:
             print(f"[FAIL] Lease expiration date '{expires_at_str}' must include timezone (ISO 8601)")
             sys.exit(1)
-        now_dt = datetime.now(timezone.utc)
         if now_dt >= exp_dt:
             print(f"[FAIL] Lease expired at {expires_at_str} (current UTC: {now_dt.isoformat()})")
             sys.exit(1)
-        if granted_dt > exp_dt:
-            print(f"[FAIL] Lease granted_at ({granted_at_str}) cannot be later than expires_at ({expires_at_str})")
+        if granted_dt >= exp_dt:
+            print(f"[FAIL] Lease granted_at ({granted_at_str}) cannot be equal to or later than expires_at ({expires_at_str})")
             sys.exit(1)
-        print(f"✓ Lease is valid until {expires_at_str}")
+        print(f"✓ Lease is valid until {expires_at_str} (active since {granted_at_str})")
     except Exception as e:
         print(f"[FAIL] Lease expiration date parsing failed for '{expires_at_str}': {e}")
         sys.exit(1)
@@ -250,14 +257,37 @@ def verify_lease(task_file: str, target_sha: str = "HEAD", lease_ref: str | None
         print(f"[FAIL] {ve}")
         sys.exit(1)
 
-    # 8. Ancestry check
+    # 8. Strict Branch Binding Validation (Fail-Closed)
+    code_br, cur_branch, _ = run_git_args(["rev-parse", "--abbrev-ref", "HEAD"])
+    if code_br == 0 and cur_branch and cur_branch != "HEAD":
+        if cur_branch != branch:
+            print(f"[FAIL] Branch mismatch: active git branch '{cur_branch}' does not match lease branch '{branch}'")
+            sys.exit(1)
+    else:
+        # On detached HEAD: target_sha must belong to declared branch
+        branch_ref_found = False
+        for ref_candidate in [f"refs/heads/{branch}", f"refs/remotes/origin/{branch}", branch]:
+            code_ref, sha_candidate, _ = run_git_args(["rev-parse", "--verify", "--quiet", ref_candidate])
+            if code_ref == 0 and sha_candidate:
+                branch_ref_found = True
+                code_anc, _, _ = run_git_args(["merge-base", "--is-ancestor", target_sha_resolved, sha_candidate])
+                if code_anc != 0:
+                    print(f"[FAIL] Branch mismatch: target SHA ({target_sha_resolved[:8]}) does not belong to lease branch '{branch}' ({sha_candidate[:8]})")
+                    sys.exit(1)
+                break
+        if not branch_ref_found:
+            print(f"[FAIL] Branch mismatch: declared branch '{branch}' does not exist as a local or remote ref")
+            sys.exit(1)
+    print(f"✓ Branch binding verified for '{branch}'")
+
+    # 9. Ancestry check
     code, _, _ = run_git_args(["merge-base", "--is-ancestor", base_sha_resolved, target_sha_resolved])
     if code != 0:
         print(f"[FAIL] base_sha ({base_sha_resolved[:8]}) is NOT an ancestor of target_sha ({target_sha_resolved[:8]})")
         sys.exit(1)
     print(f"✓ base_sha ({base_sha_resolved[:8]}) is verified ancestor of target_sha ({target_sha_resolved[:8]})")
 
-    # 9. Changed files subset of touched_areas
+    # 10. Changed files subset of touched_areas
     touched_areas = meta.get("touched_areas", [])
     if isinstance(touched_areas, str):
         touched_areas = [touched_areas]
@@ -278,7 +308,7 @@ def verify_lease(task_file: str, target_sha: str = "HEAD", lease_ref: str | None
         sys.exit(1)
     print("✓ All changed files fall within declared touched_areas")
 
-    # 10. Risk Monotonicity & Path Floor Calculation
+    # 11. Risk Monotonicity & Path Floor Calculation
     # Check if protected paths were touched
     protected_violations = [f for f in changed_files if matches_any(f, PROTECTED_PATHS)]
 
@@ -318,7 +348,7 @@ def verify_lease(task_file: str, target_sha: str = "HEAD", lease_ref: str | None
         sys.exit(1)
     print(f"✓ Risk monotonicity satisfied ({declared_risk} >= {computed_min_risk})")
 
-    # 11. Summary
+    # 12. Summary
     print("\n[PASS] All Lease & Physical Diff Gate criteria verified successfully.")
     print("Scope verified: Lease schema, git ancestry, touched_areas subset, diff size, risk monotonicity.")
     print("External gates note: CI execution and peer review records are verified via GitHub Ruleset / Review logs.")
