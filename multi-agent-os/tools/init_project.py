@@ -21,7 +21,7 @@ VERSION = "1.0.1"
 
 
 def get_template_base_dir() -> str:
-    script_dir = os.path.dirname(os.path.abspath(__file__))
+    script_dir = os.path.dirname(os.path.realpath(__file__))
     return os.path.dirname(script_dir)
 
 

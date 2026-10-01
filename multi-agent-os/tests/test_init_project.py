@@ -90,6 +90,30 @@ class TestInitProject(unittest.TestCase):
         # Verify no partial files or manifest created
         self.assertFalse(os.path.exists(target))
 
+    def test_symlinked_executable_resolves_templates_properly(self):
+        # P0 regression test: running init_project via symlink outside the distribution tree
+        outside_bin_dir = os.path.join(self.test_dir, "outside_bin")
+        os.makedirs(outside_bin_dir, exist_ok=True)
+        symlink_script = os.path.join(outside_bin_dir, "agent-os-init")
+        os.symlink(INIT_SCRIPT, symlink_script)
+
+        # Test 'new' via symlink
+        target_new = os.path.join(self.test_dir, "symlink_new_project")
+        proc_new = subprocess.run([sys.executable, symlink_script, "new", target_new], capture_output=True, text=True)
+        self.assertEqual(proc_new.returncode, 0, f"Expected 0 but got {proc_new.returncode}: {proc_new.stderr}")
+        self.assertTrue(os.path.isfile(os.path.join(target_new, "PROJECT.md")))
+        self.assertTrue(os.path.isfile(os.path.join(target_new, ".agent-os-manifest.json")))
+
+        # Test 'adopt' via symlink
+        target_adopt = os.path.join(self.test_dir, "symlink_adopt_project")
+        os.makedirs(target_adopt, exist_ok=True)
+        with open(os.path.join(target_adopt, "AGENTS.md"), "w") as f:
+            f.write("# Existing Config\n")
+        proc_adopt = subprocess.run([sys.executable, symlink_script, "adopt", target_adopt], capture_output=True, text=True)
+        self.assertEqual(proc_adopt.returncode, 0, f"Expected 0 but got {proc_adopt.returncode}: {proc_adopt.stderr}")
+        self.assertTrue(os.path.isfile(os.path.join(target_adopt, "AGENTS.md.merge-suggestion")))
+        self.assertTrue(os.path.isfile(os.path.join(target_adopt, ".agent-os-manifest.json")))
+
 
 if __name__ == "__main__":
     unittest.main()
