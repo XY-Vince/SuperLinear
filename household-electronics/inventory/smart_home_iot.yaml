@@ -1,0 +1,77 @@
+# Tier B: Smart Home & IoT Inventory
+category: "smart_home_iot"
+updated_at: "2026-10-08"
+
+devices:
+  - id: "DEV-SIOT-2023-001"
+    record_kind: "real"
+    verification_status: "unverified"
+    source_refs: ["user_declaration_unverified"]
+    observed_at: "2026-10-08"
+    brand: "Roborock"
+    model: "S8 Pro Ultra"
+    name: "全自动扫拖一体机器人"
+    serial_number: "RBRS8PU998124"
+    status: "active"
+    location: "客厅电视柜旁基站"
+    purchase_date: "2023-10-15"
+    purchase_price_usd: 1199.99
+    vendor: "Roborock Official / Amazon"
+    warranty_expiry: "2024-10-15"
+    specifications:
+      dock_type: "RockDock Ultra (Auto Empty & Mop Wash)"
+      battery_capacity_mah: 5200
+      suction_pa: 6000
+    network_and_account:
+      wifi_ssid: "Home-IoT-Guest"
+      ip_assignment: "DHCP Reserved (192.168.10.45)"
+      app: "Roborock App (Bound to Admin Family Account)"
+    consumables:
+      main_brush_duoroller: "Dual Rubber Rollers (Replace every 300 hrs)"
+      side_brush: "Silicone Side Brush (Replace every 200 hrs)"
+      dust_bag: "3L Disposable Dust Bag (Replace every 60 days)"
+      hepa_filter: "Washable E11 Filter (Replace every 180 days)"
+    maintenance_schedule:
+      dust_bag_check:
+        interval_days: 45
+        last_serviced: "2026-08-25"
+        next_due: "2026-10-09"
+      sensor_cleaning:
+        interval_days: 30
+        last_serviced: "2026-09-15"
+        next_due: "2026-10-15"
+      dock_cleaning:
+        interval_days: 30
+        last_serviced: "2026-09-15"
+        next_due: "2026-10-15"
+    attachments:
+      invoice: "receipts_warranties/Roborock_S8ProUltra_Invoice_2023-10-15.pdf"
+      manual: "manuals/Roborock_S8ProUltra_Manual.pdf"
+
+  - id: "DEV-SIOT-2024-002"
+    record_kind: "real"
+    verification_status: "unverified"
+    source_refs: ["user_declaration_unverified"]
+    observed_at: "2026-10-08"
+    brand: "ASUS"
+    model: "RT-AX88U Pro"
+    name: "家庭主路由 Wi-Fi 6"
+    serial_number: "ASUSAX88UP2401"
+    status: "active"
+    location: "弱电箱及书房"
+    purchase_date: "2024-01-20"
+    purchase_price_usd: 249.99
+    vendor: "Newegg"
+    warranty_expiry: "2026-01-20"
+    specifications:
+      cpu: "Quad-core 2.0 GHz"
+      ports: "2.5G WAN/LAN + 1G LAN x 4"
+      standard: "Wi-Fi 6 (AX6000)"
+    network_and_account:
+      ip_gateway: "192.168.1.1"
+      firmware_version: "3.0.0.6.102_34320"
+      auto_firmware_update: false # 手动升级防掉线
+      config_backup: "backups_data/Router_ASUS_AX88UPro_20240901.cfg"
+    attachments:
+      invoice: "receipts_warranties/ASUS_RTAX88UPro_Invoice_2024-01-20.pdf"
+      manual: "manuals/ASUS_RTAX88UPro_Manual.pdf"

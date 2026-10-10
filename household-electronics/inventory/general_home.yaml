@@ -1,0 +1,66 @@
+# Tier D: General Home & Personal Electronics Inventory
+category: "general_home"
+updated_at: "2026-10-08"
+
+devices:
+  - id: "DEV-GHOM-2023-001"
+    record_kind: "real"
+    verification_status: "unverified"
+    source_refs: ["user_declaration_unverified"]
+    observed_at: "2026-10-08"
+    brand: "Dyson"
+    model: "V12 Detect Slim Extra"
+    name: "轻量激光无绳吸尘器"
+    serial_number: "DYV12SLIM9918"
+    status: "active"
+    location: "玄关收纳柜"
+    purchase_date: "2023-12-05"
+    purchase_price_usd: 549.99
+    vendor: "Dyson Official"
+    warranty_expiry: "2025-12-05"
+    specifications:
+      weight_kg: 2.2
+      suction_airwatts: 150
+      battery_runtime_min: 60
+    consumables:
+      washable_filter: "Part 971517-01 (Wash monthly, dry 24h, replace yearly)"
+    maintenance_schedule:
+      filter_wash:
+        interval_days: 30
+        last_serviced: "2026-09-10"
+        next_due: "2026-10-10"
+      roller_hair_clean:
+        interval_days: 14
+        last_serviced: "2026-09-28"
+        next_due: "2026-10-12"
+    attachments:
+      invoice: "receipts_warranties/Dyson_V12DetectSlim_Invoice_2023-12-05.pdf"
+      manual: "manuals/Dyson_V12DetectSlim_Manual.pdf"
+
+  - id: "DEV-GHOM-2024-002"
+    record_kind: "real"
+    verification_status: "unverified"
+    source_refs: ["user_declaration_unverified"]
+    observed_at: "2026-10-08"
+    brand: "Sony"
+    model: "WH-1000XM5"
+    name: "头戴式无线降噪耳机"
+    serial_number: "SNYWH5992014"
+    status: "active"
+    location: "书房书桌架"
+    purchase_date: "2024-05-20"
+    purchase_price_usd: 399.99
+    vendor: "Amazon US"
+    warranty_expiry: "2025-05-20"
+    specifications:
+      battery_life_hours: 30
+      anc_processor: "HD QN1 + V1"
+      charging_spec: "USB-PD (3 min charge = 3 hr playback)"
+    maintenance_schedule:
+      earpad_cushion_clean:
+        interval_days: 30
+        last_serviced: "2026-09-15"
+        next_due: "2026-10-15"
+    attachments:
+      invoice: "receipts_warranties/Sony_WH1000XM5_Invoice_2024-05-20.pdf"
+      manual: "manuals/Sony_WH1000XM5_Manual.pdf"

@@ -1,0 +1,90 @@
+# Tier A: Computing & Storage Inventory
+category: "computing_and_storage"
+updated_at: "2026-10-08"
+
+devices:
+  - id: "DEV-COMP-2023-001"
+    record_kind: "real"
+    verification_status: "unverified"
+    source_refs: ["user_declaration_unverified"]
+    observed_at: "2026-10-08"
+    brand: "Apple"
+    model: "MacBook Pro 16-inch (M3 Max)"
+    name: "主工作站笔记本"
+    serial_number: "C02XYZ123456"
+    status: "active"
+    location: "书房书桌"
+    purchase_date: "2023-11-10"
+    purchase_price_usd: 3499.00
+    vendor: "Apple Store"
+    warranty_expiry: "2026-11-10" # AppleCare+
+    specifications:
+      cpu: "Apple M3 Max (16-core CPU, 40-core GPU)"
+      ram_gb: 64
+      storage_ssd_tb: 2
+      os_version: "macOS Sonoma 14.5"
+    data_hygiene:
+      filevault_enabled: true
+      cloud_sync: "iCloud Drive (Desktop & Documents Disabled, Local Root First)"
+      backup_targets:
+        - "Time Machine to Orico External 4TB (Daily)"
+        - "Archive Mirror to /Volumes/Untitled (Periodic)"
+      last_backup_verified: "2026-10-01"
+    attachments:
+      invoice: "receipts_warranties/Apple_MacBookPro16_Invoice_2023-11-10.pdf"
+      manual: "manuals/Apple_MacBookPro16_M3Max_Manual.pdf"
+
+  - id: "DEV-COMP-2024-002"
+    record_kind: "real"
+    verification_status: "unverified"
+    source_refs: ["user_declaration_unverified"]
+    observed_at: "2026-10-08"
+    brand: "Apple"
+    model: "iPhone 15 Pro"
+    name: "日常主力手机"
+    serial_number: "F2LMN8901234"
+    status: "active"
+    location: "随身"
+    purchase_date: "2024-01-15"
+    purchase_price_usd: 999.00
+    vendor: "Best Buy"
+    warranty_expiry: "2025-01-15"
+    specifications:
+      storage_gb: 256
+      battery_health_percent: 94
+      battery_cycles: 280
+      os_version: "iOS 17.5.1"
+    data_hygiene:
+      cloud_sync: "iCloud 2TB (Photos Optimized, Local Mac Archive Sync Monthly)"
+      two_factor_auth_hub: true
+      last_backup_verified: "2026-10-05"
+    attachments:
+      invoice: "receipts_warranties/Apple_iPhone15Pro_Invoice_2024-01-15.pdf"
+      manual: "manuals/Apple_iPhone15Pro_Manual.pdf"
+
+  - id: "DEV-STOR-2024-001"
+    record_kind: "real"
+    verification_status: "unverified"
+    source_refs: ["user_declaration_unverified"]
+    observed_at: "2026-10-08"
+    brand: "SanDisk"
+    model: "Extreme PRO Portable SSD 2TB"
+    name: "高速工程移动固态硬盘"
+    serial_number: "SDSSD2TB998811"
+    status: "active"
+    location: "数码收纳包"
+    purchase_date: "2024-03-01"
+    purchase_price_usd: 189.99
+    vendor: "B&H Photo"
+    warranty_expiry: "2029-03-01" # 5-Year Limited Warranty
+    specifications:
+      capacity_gb: 2000
+      interface: "USB 3.2 Gen 2x2 Type-C"
+      filesystem: "APFS (Encrypted)"
+    data_hygiene:
+      smart_status: "PASSED"
+      is_single_copy_storage: false
+      contains_sensitive_data: true
+    attachments:
+      invoice: "receipts_warranties/SanDisk_ExtremePro2TB_Invoice_2024-03-01.pdf"
+      manual: "manuals/SanDisk_ExtremePro_Manual.pdf"

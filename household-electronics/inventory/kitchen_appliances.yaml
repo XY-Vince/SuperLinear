@@ -1,0 +1,113 @@
+# Tier C: Kitchen Appliances Inventory
+category: "kitchen_appliances"
+updated_at: "2026-10-08"
+
+devices:
+  - id: "DEV-KTCH-2023-001"
+    record_kind: "real"
+    verification_status: "unverified"
+    source_refs: ["user_declaration_unverified"]
+    observed_at: "2026-10-08"
+    brand: "Breville"
+    model: "BES870XL (Barista Express)"
+    name: "意式半自动咖啡机"
+    serial_number: "BV870X991823"
+    status: "active"
+    location: "厨房吧台"
+    purchase_date: "2023-11-24"
+    purchase_price_usd: 699.95
+    vendor: "Amazon US"
+    warranty_expiry: "2025-11-24"
+    specifications:
+      power_rating_w: 1600
+      voltage: "120V / 60Hz"
+      pump_pressure_bar: 15
+    consumables:
+      water_filter: "Breville ClaroSwiss (90 days)"
+      descaler: "Commercial Citric Acid Powder / Liquid"
+      gasket: "54mm Silicone Steam Ring (SP0001474)"
+    maintenance_schedule:
+      descaling:
+        interval_days: 60
+        last_serviced: "2026-08-15"
+        next_due: "2026-10-14"
+      filter_replacement:
+        interval_days: 90
+        last_serviced: "2026-07-20"
+        next_due: "2026-10-18"
+      backflush:
+        interval_days: 30
+        last_serviced: "2026-09-20"
+        next_due: "2026-10-20"
+    attachments:
+      invoice: "receipts_warranties/Breville_BES870XL_Invoice_2023-11-24.pdf"
+      manual: "manuals/Breville_BES870XL_Manual.pdf"
+
+  - id: "DEV-KTCH-2024-002"
+    record_kind: "real"
+    verification_status: "unverified"
+    source_refs: ["user_declaration_unverified"]
+    observed_at: "2026-10-08"
+    brand: "Instant Pot"
+    model: "Duo Plus 9-in-1 (6 Quart)"
+    name: "智能多功能多用压力锅"
+    serial_number: "IPDUOPLUS24019"
+    status: "active"
+    location: "厨房料理台"
+    purchase_date: "2024-02-18"
+    purchase_price_usd: 129.99
+    vendor: "Target"
+    warranty_expiry: "2025-02-18"
+    specifications:
+      power_rating_w: 1000
+      capacity_quarts: 6
+      inner_pot_material: "Food Grade 304 Stainless Steel"
+    consumables:
+      sealing_ring: "6 Quart Genuine Silicone Ring (Replace every 12-18 months)"
+      anti_block_shield: "Stainless Steel Mesh Cap"
+    maintenance_schedule:
+      sealing_ring_inspection:
+        interval_days: 180
+        last_serviced: "2026-08-18"
+        next_due: "2027-02-14"
+      deep_clean_float_valve:
+        interval_days: 90
+        last_serviced: "2026-08-01"
+        next_due: "2026-10-30"
+    attachments:
+      invoice: "receipts_warranties/InstantPot_DuoPlus6Qt_Invoice_2024-02-18.pdf"
+      manual: "manuals/InstantPot_DuoPlus_Manual.pdf"
+
+  - id: "DEV-KTCH-2024-003"
+    record_kind: "real"
+    verification_status: "unverified"
+    source_refs: ["user_declaration_unverified"]
+    observed_at: "2026-10-08"
+    brand: "Cosori"
+    model: "Pro LE 5.0-Quart Air Fryer"
+    name: "低噪触控空气炸锅"
+    serial_number: "CSAF501099"
+    status: "active"
+    location: "厨房西侧操作台"
+    purchase_date: "2024-04-10"
+    purchase_price_usd: 99.99
+    vendor: "Amazon US"
+    warranty_expiry: "2026-04-10" # 2-Year Extended
+    specifications:
+      power_rating_w: 1500
+      capacity_quarts: 5.0
+      temp_range_f: "170 - 450"
+    consumables:
+      basket_liner: "Silicone Reusable Liner (Replace on wear)"
+    maintenance_schedule:
+      heating_coil_degreasing:
+        interval_days: 90
+        last_serviced: "2026-08-10"
+        next_due: "2026-11-08"
+      coating_inspection:
+        interval_days: 90
+        last_serviced: "2026-08-10"
+        next_due: "2026-11-08"
+    attachments:
+      invoice: "receipts_warranties/Cosori_ProLE5Qt_Invoice_2024-04-10.pdf"
+      manual: "manuals/Cosori_ProLE5Qt_Manual.pdf"

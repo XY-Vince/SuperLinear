@@ -1,0 +1,86 @@
+#!/usr/bin/env python3
+"""
+HEM (Household Electronics & Appliances Lifecycle Intelligence) CLI
+Convenient entrypoint for Vince to manage devices, inspect health, and record maintenance.
+"""
+import sys
+from pathlib import Path
+
+# Add scripts directory to sys.path
+scripts_dir = Path(__file__).resolve().parent / "scripts"
+if str(scripts_dir) not in sys.path:
+    sys.path.insert(0, str(scripts_dir))
+
+import status_report
+import validate_inventory
+import record_maintenance
+import inventory_io as io
+
+def print_help():
+    print("""HEM (Household Electronics Lifecycle Intelligence) CLI
+
+Usage:
+  ./hem                     查看当前设备状态与近期维护预警 (等同于 ./hem status)
+  ./hem status [options]    生成状态报告 (支持 --as-of YYYY-MM-DD, --json)
+  ./hem check               校验所有设备台账数据格式与完整性
+  ./hem record [options]    录入一次设备保养或耗材更换
+  ./hem list                列出所有已登记设备与状态
+  ./hem help                显示本帮助信息
+
+维护录入参数说明 (--cost):
+  --cost <USD>              可选。省略时记录为未知 (null)；显式 --cost 0 记录为 0.00。
+                            已存在未知记录再次以具体费用重跑会提示冲突阻断，防止静默覆盖。
+
+示例:
+  ./hem
+  ./hem list
+  ./hem record --device DEV-GHOM-2023-001 --task filter_wash --date 2026-10-10 --notes "清水冲洗滤网并阴干"
+  ./hem record --device DEV-SIOT-2023-001 --task dust_bag_check --date 2026-10-10 --cost 0 --notes "检查集尘袋，容量正常继续使用"
+""")
+
+def list_devices():
+    inv_dir = Path(__file__).resolve().parent / "inventory"
+    ok, errors, devices, _, _ = io.load_and_validate_inventory_dir(inv_dir)
+    if not ok:
+        print(f"Error loading inventory: {errors}", file=sys.stderr)
+        return 1
+    print("=" * 80)
+    print(f"{'Device ID':<20} | {'Category':<22} | {'Brand / Model':<30} | {'Status'}")
+    print("-" * 80)
+    for d in devices:
+        dev_id = d.get("id", "")
+        cat = d.get("_category", "")
+        desc = f"{d.get('brand', '')} {d.get('model', '')}"[:30]
+        v_status = d.get("verification_status", "unverified")
+        st = d.get("status", "active")
+        print(f"{dev_id:<20} | {cat:<22} | {desc:<30} | {st} ({v_status})")
+    print("=" * 80)
+    print(f"共 {len(devices)} 台设备登记。")
+    return 0
+
+def main():
+    if len(sys.argv) == 1:
+        # Default behavior: run status report
+        return status_report.main()
+
+    cmd = sys.argv[1].lower()
+    # Forward remaining arguments
+    sys.argv = [sys.argv[0]] + sys.argv[2:]
+
+    if cmd in ("status", "report"):
+        return status_report.main()
+    elif cmd in ("check", "validate"):
+        return validate_inventory.main()
+    elif cmd in ("record", "maint", "maintenance"):
+        return record_maintenance.main()
+    elif cmd in ("list", "devices", "ls"):
+        return list_devices()
+    elif cmd in ("help", "-h", "--help"):
+        print_help()
+        return 0
+    else:
+        print(f"未知指令: '{cmd}'。使用 './hem help' 查看帮助。", file=sys.stderr)
+        return 1
+
+if __name__ == "__main__":
+    sys.exit(main())
